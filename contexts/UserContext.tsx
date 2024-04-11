@@ -2,18 +2,18 @@ import React, { createContext, useState, useContext, Dispatch, SetStateAction } 
 import UserModel from '../models/UserModel';
 
 interface UserContextProps {
-    user: UserModel;
-    setUser: Dispatch<SetStateAction<UserModel>>;
-    createUser: (userData: UserModel) => void;
-    isConnect: () => boolean;
-    logout: () => void;
-    token: string;
-    setToken : Dispatch<SetStateAction<string>>;
-  }
+  user: UserModel;
+  setUser: Dispatch<SetStateAction<UserModel>>;
+  createUser: (username: string, email: string, password: string) => void;
+  isConnect: () => boolean;
+  logout: () => void;
+  token: string;
+  setToken: Dispatch<SetStateAction<string>>;
+}
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
-function UserProvider({ children } : { children: React.ReactNode }){
+function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState({
     _id: '',
     username: '',
@@ -21,51 +21,67 @@ function UserProvider({ children } : { children: React.ReactNode }){
     password: '',
     role: '',
     favorites: [],
-    } as UserModel);
-    const [token, setToken] = useState('');
+  } as UserModel);
+  const [token, setToken] = useState('');
 
-    const isConnect = () => {
-        return token != '';
-    }
+  const isConnect = () => {
+    return token != '';
+  }
 
 
-    const createUser = (userData: UserModel) =>{
-        userData._id = '1';
-        userData.role = 'user';
-        userData.username = '@usernumero1';
-        setUser(userData);
-        console.log('Utilisateur créé');    
+  const createUser = (username: string, email: string, password: string) => {
+    const newUser: UserModel = {
+      _id: '1',
+      username: username,
+      email: email,
+      password: password,
+      role: 'user',
+      favorites: []
     };
+    setUser(newUser);
+  };
 
-    const logout = () => {
-      setToken('');
-    }
+  const deleteUser = () => {
+    const emptyUser: UserModel = {
+      _id: '',
+      username: '',
+      email: '',
+      password: '',
+      role: '',
+      favorites: []
+    };
+    setUser(emptyUser);
+  };
+
+  const logout = () => {
+    setToken('');
+    deleteUser();
+  }
 
   return (
-    <UserContext.Provider value={{ 
-        user, 
-        setUser,
-        createUser,
-        isConnect,
-        logout,
-        token,
-        setToken
-        }}>
+    <UserContext.Provider value={{
+      user,
+      setUser,
+      createUser,
+      isConnect,
+      logout,
+      token,
+      setToken
+    }}>
       {children}
     </UserContext.Provider>
   );
 };
 
 const useUserContext = () => {
-    const context = useContext(UserContext);
-    if (!context) {
-      throw new Error("useUserContext doit être utilisé à l'intérieur de UserProvider");
-    }
-    return context;
-  };
+  const context = useContext(UserContext);
+  if (!context) {
+    throw new Error("useUserContext doit être utilisé à l'intérieur de UserProvider");
+  }
+  return context;
+};
 
 export { UserContext, useUserContext, UserProvider };
-  
-  
-  
-   
+
+
+

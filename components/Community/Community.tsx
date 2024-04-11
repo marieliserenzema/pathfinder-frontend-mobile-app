@@ -4,7 +4,7 @@ import { View, Text } from 'react-native';
 export default function CommunityScreen() {
   return (
     <View>
-        <Text>CommunityPage</Text>
+      <Text>CommunityPage</Text>
     </View>
   );
 }

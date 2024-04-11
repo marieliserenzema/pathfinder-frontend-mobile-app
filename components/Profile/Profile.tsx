@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Avatar, ListItem } from 'react-native-elements';
-import { useUserContext } from '../contexts/UserContext';
+import { useUserContext } from '../../contexts/UserContext';
 
 const ProfileScreen = () => {
   const { user, logout } = useUserContext();
@@ -16,23 +16,23 @@ const ProfileScreen = () => {
         </TouchableOpacity>
       </View>
       <View style={styles.header}>
-        <Avatar rounded source={require('../assets/avatar.png')} size="xlarge" />
+        <Avatar rounded source={require('../../assets/avatar.png')} size="xlarge" containerStyle={styles.avatar} />
         <Text style={styles.name}>{user.username}</Text>
       </View>
       <View style={styles.body}>
-      <ListItem bottomDivider>
-        <MaterialIcons name="email" size={24} color="green" />
-        <ListItem.Content>
-          <ListItem.Title>{user.email}</ListItem.Title>
-        </ListItem.Content>
+        <ListItem bottomDivider>
+          <MaterialIcons name="email" size={24} color="green" />
+          <ListItem.Content>
+            <ListItem.Title>{user.email}</ListItem.Title>
+          </ListItem.Content>
         </ListItem>
         <ListItem bottomDivider>
-        <MaterialIcons name="lock" size={24} color="green" />
-        <ListItem.Content>
-          <ListItem.Title>************</ListItem.Title>
-        </ListItem.Content>
+          <MaterialIcons name="lock" size={24} color="green" />
+          <ListItem.Content>
+            <ListItem.Title>************</ListItem.Title>
+          </ListItem.Content>
         </ListItem>
-        <TouchableOpacity onPress={() => {logout()}} style={styles.logoutButton}>
+        <TouchableOpacity onPress={() => { logout() }} style={styles.logoutButton}>
           <ListItem bottomDivider>
             <MaterialIcons name="logout" size={24} color="green" />
             <ListItem.Content>
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  title:{
+  title: {
     alignItems: 'center',
     marginTop: 20,
   },
@@ -69,6 +69,10 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginTop: 20,
+  },
+  avatar: {
+    borderWidth: 5,
+    borderColor: 'green',
   },
   name: {
     fontSize: 20,
@@ -91,3 +95,5 @@ const styles = StyleSheet.create({
 });
 
 export default ProfileScreen;
+
+
