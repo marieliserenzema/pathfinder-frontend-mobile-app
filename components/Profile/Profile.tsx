@@ -3,9 +3,19 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'r
 import { MaterialIcons } from '@expo/vector-icons';
 import { Avatar, ListItem } from 'react-native-elements';
 import { useUserContext } from '../../contexts/UserContext';
+import { NavigationProp } from '@react-navigation/native';
 
-const ProfileScreen = () => {
+interface ProfileScreenProps {
+  navigation: NavigationProp<any>;
+}
+
+const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
   const { user, logout } = useUserContext();
+
+  const logoutnav = () => {
+    logout();
+    navigation.navigate('Login');
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -17,24 +27,24 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.header}>
         <Avatar rounded source={require('../../assets/avatar.png')} size="xlarge" containerStyle={styles.avatar} />
-        <Text style={styles.name}>{user.username}</Text>
+        <Text style={styles.name}>{user!.username}</Text>
       </View>
       <View style={styles.body}>
         <ListItem bottomDivider>
-          <MaterialIcons name="email" size={24} color="green" />
+          <MaterialIcons name="email" size={24} color="#a3b18a" />
           <ListItem.Content>
-            <ListItem.Title>{user.email}</ListItem.Title>
+            <ListItem.Title>{user!.email}</ListItem.Title>
           </ListItem.Content>
         </ListItem>
         <ListItem bottomDivider>
-          <MaterialIcons name="lock" size={24} color="green" />
+          <MaterialIcons name="lock" size={24} color="#a3b18a" />
           <ListItem.Content>
             <ListItem.Title>************</ListItem.Title>
           </ListItem.Content>
         </ListItem>
-        <TouchableOpacity onPress={() => { logout() }} style={styles.logoutButton}>
+        <TouchableOpacity onPress={logoutnav} style={styles.logoutButton}>
           <ListItem bottomDivider>
-            <MaterialIcons name="logout" size={24} color="green" />
+            <MaterialIcons name="logout" size={24} color="#a3b18a" />
             <ListItem.Content>
               <ListItem.Title>Se déconnecter</ListItem.Title>
             </ListItem.Content>
@@ -63,7 +73,7 @@ const styles = StyleSheet.create({
     right: 20,
   },
   editButtonText: {
-    color: 'green',
+    color: '#a3b18a',
     fontWeight: 'bold',
   },
   header: {
@@ -72,7 +82,7 @@ const styles = StyleSheet.create({
   },
   avatar: {
     borderWidth: 5,
-    borderColor: 'green',
+    borderColor: '#a3b18a',
   },
   name: {
     fontSize: 20,

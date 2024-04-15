@@ -12,7 +12,7 @@ interface RegisterScreenProps {
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
 
-    const { setToken, createUser } = useUserContext();
+    const { setToken } = useUserContext();
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -31,18 +31,14 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
 
     const handleRegister = async () => {
         try {
-            const response: any = await client.register(email, password, username);
-            console.log(response.status);
-            if (response.status === 200) {
-                setToken(response.token);
-                createUser(username, email, password);
-                navigation.navigate('Home');
-            } else {
-                Alert.alert('Erreur', 'Il y a eu un problème avec votre création de compte. Veuillez réesayer.');
-
-            }
+            const token: string | null = await client.register(email, password, username);
+            if (token) setToken(token)
+            navigation.navigate('Home');
         } catch (error) {
             console.error(error);
+            Alert.alert('Erreur', 'Il y a eu un problème avec votre création de compte. Veuillez réesayer.');
+
+
         }
     };
 
@@ -117,13 +113,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     button: {
-        backgroundColor: "green",
+        backgroundColor: "#a3b18a",
         width: "100%",
         borderRadius: 10,
         padding: "2%"
     },
     disabledButton: {
-        backgroundColor: "green",
+        backgroundColor: "#a3b18a",
         width: "100%",
         borderRadius: 10,
         padding: "2%",
@@ -139,10 +135,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
     textButtonGreen: {
-        color: "green"
+        color: "#a3b18a"
     },
     textButtonGreenBold: {
-        color: "green",
+        color: "#a3b18a",
         fontWeight: "700"
     },
     errorText: {
@@ -152,7 +148,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     validText: {
-        color: 'green',
+        color: '#a3b18a',
         marginBottom: 10,
         fontSize: 10,
         alignSelf: 'flex-start'

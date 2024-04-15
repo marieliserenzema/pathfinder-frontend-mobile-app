@@ -1,72 +1,80 @@
-import React, { createContext, useState, useContext, Dispatch, SetStateAction } from 'react';
+import React, { createContext, useState, useContext, Dispatch, SetStateAction, useEffect } from 'react';
 import UserModel from '../models/UserModel';
+import client from '../client/client';
 
 interface UserContextProps {
-  user: UserModel;
-  setUser: Dispatch<SetStateAction<UserModel>>;
-  createUser: (username: string, email: string, password: string) => void;
-  isConnect: () => boolean;
+  user: UserModel | undefined;
+  setUser: Dispatch<SetStateAction<UserModel | undefined>>;
+  setUserInfo: (token: string) => void;
   logout: () => void;
-  token: string;
-  setToken: Dispatch<SetStateAction<string>>;
+  token: string | undefined;
+  setToken: Dispatch<SetStateAction<string | undefined>>;
+  addToFavorite: (hikeId: string) => void;
+  removeFromFavorite: (hikeId: string) => void;
+  isFavorite: (hikeId: string) => boolean;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState({
-    _id: '',
-    username: '',
-    email: '',
-    password: '',
-    role: '',
-    favorites: [],
-  } as UserModel);
-  const [token, setToken] = useState('');
-
-  const isConnect = () => {
-    return token != '';
-  }
+  const [user, setUser] = useState<UserModel | undefined>(undefined);
+  const [token, setToken] = useState<string | undefined>(undefined);
+  const [favorite, setFavorite] = useState<string[]>([]);
 
 
-  const createUser = (username: string, email: string, password: string) => {
-    const newUser: UserModel = {
-      _id: '1',
-      username: username,
-      email: email,
-      password: password,
-      role: 'user',
-      favorites: []
-    };
-    setUser(newUser);
+  const setUserInfo = async (token: string) => {
+    const info: any = await client.getMeInfo(token);
+    if (info) {
+      const newUser: UserModel = {
+        _id: info._id,
+        username: info.username,
+        email: info.email,
+        password: info.password,
+        favorite: info.favorite,
+        role: info.role
+      }
+      setUser(newUser);
+    }
   };
 
-  const deleteUser = () => {
-    const emptyUser: UserModel = {
-      _id: '',
-      username: '',
-      email: '',
-      password: '',
-      role: '',
-      favorites: []
-    };
-    setUser(emptyUser);
-  };
+  useEffect(() => {
+    if (token) {
+      setUserInfo(token);
+      if (user) setFavorite(user.favorite);
+    } else {
+      setUser(undefined)
+    }
+  }, [token]);
 
   const logout = () => {
-    setToken('');
-    deleteUser();
+    setUser(undefined)
+    setFavorite([]);
+    setToken(undefined);
+  }
+
+  const addToFavorite = (hikeId: string) => {
+    setFavorite([...favorite, hikeId]);
+  }
+
+  const removeFromFavorite = (hikeId: string) => {
+    setFavorite(favorite.filter(id => id !== hikeId));
+  }
+
+  const isFavorite = (hikeId: string) => {
+    return favorite.includes(hikeId);
   }
 
   return (
     <UserContext.Provider value={{
       user,
       setUser,
-      createUser,
-      isConnect,
+      setUserInfo,
       logout,
       token,
-      setToken
+      setToken,
+      addToFavorite,
+      isFavorite,
+      removeFromFavorite
     }}>
       {children}
     </UserContext.Provider>

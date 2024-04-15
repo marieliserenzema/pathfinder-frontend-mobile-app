@@ -17,13 +17,13 @@ interface NavigationTabsProps {
 }
 
 const NavigationTabs: React.FC<NavigationTabsProps> = ({ navigation }) => {
-  const { isConnect } = useUserContext();
+  const { token } = useUserContext();
 
   useEffect(() => {
-    if (!isConnect) {
+    if (!token) {
       navigation.navigate('Login');
     }
-  }, [isConnect, navigation]);
+  }, [token, navigation]);
 
   return (
     <Tab.Navigator
@@ -33,9 +33,9 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ navigation }) => {
           if (route.name === 'Explorer') {
             iconName = 'find';
           } else if (route.name === 'Communauté') {
-            iconName = 'hearto';
+            iconName = 'team';
           } else if (route.name === 'Favoris') {
-            iconName = 'book';
+            iconName = 'hearto';
           } else if (route.name === 'Profil') {
             iconName = 'user';
           } else {
@@ -43,7 +43,7 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ navigation }) => {
           }
           return <AntDesign name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'green',
+        tabBarActiveTintColor: '#a3b18a',
         tabBarInactiveTintColor: 'gray',
       })}
     >

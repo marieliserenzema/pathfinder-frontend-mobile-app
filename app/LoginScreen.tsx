@@ -29,17 +29,16 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
 
   const handleLogin = async () => {
-
+    setEmail("test@test.fr");
+    setPassword("123Aze.123");
     try {
-      const response: any = await client.login(email, password);
-      if (response.status === 200) {
-        setToken(response.token);
+      const token: any = await client.login(email, password);
+      if (token) {
+        setToken(token);
         navigation.navigate('Home');
-      } else {
-        Alert.alert('Erreur', 'Adresse email ou mot de passe invalide.');
       }
     } catch (error) {
-      console.error(error);
+      Alert.alert('Erreur', 'Adresse email ou mot de passe invalide.');
     }
   };
 
@@ -54,7 +53,6 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         style={styles.input}
         placeholder="Email"
         onChangeText={(text) => setEmail(text)}
-
         value={email}
         keyboardType="email-address"
         autoCapitalize="none"
@@ -67,7 +65,7 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         value={password}
         secureTextEntry
       />
-      <TouchableOpacity onPress={handleLogin} style={canLogin ? styles.button : styles.disabledButton} disabled={!canLogin}>
+      <TouchableOpacity onPress={handleLogin} style={canLogin ? styles.button : styles.disabledButton}>
         <Text style={styles.textButton}> Se connecter </Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={handleSignUp} style={styles.registerButton}>
@@ -98,13 +96,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: "green",
+    backgroundColor: "#a3b18a",
     width: "100%",
     borderRadius: 10,
     padding: "2%"
   },
   disabledButton: {
-    backgroundColor: "green",
+    backgroundColor: "#a3b18a",
     width: "100%",
     borderRadius: 10,
     padding: "2%",
@@ -120,10 +118,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textButtonGreen: {
-    color: "green"
+    color: "#a3b18a"
   },
   textButtonGreenBold: {
-    color: "green",
+    color: "#a3b18a",
     fontWeight: "700"
   }
 });
