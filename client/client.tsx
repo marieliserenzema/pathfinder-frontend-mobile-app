@@ -2,7 +2,7 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 async function login(email: string, password: string) {
   try {
-    const response = await fetch('http://127.0.0.1:3000/auth/login', {
+    const response = await fetch('https://8eb4-195-7-117-146.ngrok-free.app/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -28,7 +28,7 @@ async function login(email: string, password: string) {
 
 const register = async (email: string, password: string, username: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/auth/register', {
+    const response = await fetch('https://8eb4-195-7-117-146.ngrok-free.app/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
