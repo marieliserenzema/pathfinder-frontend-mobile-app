@@ -5,10 +5,10 @@ import HikeComponent from '../HikeComponent/HikeComponent';
 import client from '../../client/client';
 import { useUserContext } from '../../contexts/UserContext';
 import Header from '../Header/Header';
+import MapScreen from "../Map/Map";
 
 
 export default function ExploreScreen() {
-
   const { token } = useUserContext();
   const [activeTab, setActiveTab] = useState('map');
   const [hikes, setHikes] = useState<HikeModel[]>([]);
@@ -45,7 +45,9 @@ export default function ExploreScreen() {
         </TouchableOpacity>
       </View>
       {activeTab === 'map' ? (
-        <Text style={styles.scroll_view}>Map</Text>
+          <View style={styles.scroll_view}>
+            <MapScreen />
+          </View>
       ) : (
         <ScrollView style={styles.scroll_view}>
           {hikes.map((hike, index) => {
@@ -82,6 +84,8 @@ const styles = StyleSheet.create({
   },
   scroll_view: {
     flex: 1,
+    height: "100%",
+    width: "100%"
   }
 });
 

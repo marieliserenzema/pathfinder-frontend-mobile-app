@@ -7,9 +7,6 @@ import ExploreScreen from '../components/Explore/Explore';
 import CommunityScreen from '../components/Community/Community';
 import SavedScreen from '../components/Saved/Saved';
 import ProfileScreen from '../components/Profile/Profile';
-import MapScreen from "../components/Map/Map";
-
-
 
 const Tab = createBottomTabNavigator();
 
@@ -48,7 +45,7 @@ const NavigationTabs: React.FC<NavigationTabsProps> = ({ navigation }) => {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Explorer" component={MapScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Explorer" component={ExploreScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Communauté" component={CommunityScreen} />
       <Tab.Screen name="Favoris" component={SavedScreen} />
       <Tab.Screen name="Profil" component={ProfileScreen} options={{ headerShown: false }} />
