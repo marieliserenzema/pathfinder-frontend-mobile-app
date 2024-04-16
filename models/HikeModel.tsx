@@ -1,16 +1,22 @@
 interface HikeModel {
     _id: string;
-    hikeId: string;
-    coordinates: [number, number][];
-    description: string;
-    distance: string;
-    to: string;
-    from: string;
-    name: string;
-    symbol: string;
-    osmcSymbol: string;
-    website: string;
-    operator: string;
+    type: string;
+    hike_id: string;
+    geometry: {
+        type: string;
+        coordinates: [number, number][];
+    };
+    properties: {
+        name: string;
+        description: string;
+        distance: string;
+        to: string;
+        from: string;
+        symbol: string;
+        'osmc-symbol': string;
+        website: string;
+        operator: string;
+    };
 }
 
 export default HikeModel;
