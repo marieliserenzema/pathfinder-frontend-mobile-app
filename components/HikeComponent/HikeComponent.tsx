@@ -7,24 +7,22 @@ import getTimeFromDistance from '../../utils/distance_to_hours';
 import { useUserContext } from '../../contexts/UserContext';
 
 export default function HikeComponent({ hike }: { hike: HikeModel }) {
+    const { favoriteHikes, updateFavoriteHike } = useUserContext();
 
-    const { addToFavorite, isFavorite, removeFromFavorite } = useUserContext();
+    const isFavorite = (id: string) => {
+        return favoriteHikes.some((hike) => hike._id === id);
+    }
 
-    const time = getTimeFromDistance(hike.distance);
 
-    const favorite = () => {
-        if (isFavorite(hike._id)) {
-            removeFromFavorite(hike._id);
-        }
-        else {
-            addToFavorite(hike._id);
-        }
+    const time = getTimeFromDistance(hike.properties.distance);
+    const handleFavorite = () => {
+        updateFavoriteHike(hike._id);
     }
 
 
     return (
         <View style={styles.card}>
-            <TouchableOpacity style={styles.favoriteIcon} onPress={favorite}>
+            <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavorite}>
                 {
                     isFavorite(hike._id) ?
                         <AntDesign name="heart" size={16} color="white" /> :
@@ -40,7 +38,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
                 </View>
                 <View style={styles.description_container} >
                     <Text style={styles.title} numberOfLines={1}>
-                        {hike.name}
+                        {hike.properties.name}
                     </Text>
                     <View style={styles.rating} >
                         <AntDesign name="star" size={16} color="#a3b18a" />
@@ -52,7 +50,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
                         <View style={styles.description}>
                             <FontAwesome5 name="walking" size={16} color="#a3b18a" style={styles.icon} />
                             <Text>
-                                {hike.distance} km
+                                {hike.properties.distance} km
                             </Text>
                         </View>
                     </View>
@@ -64,7 +62,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
                     </View>
                 </View>
             </View>
-        </View>
+        </View >
     );
 }
 

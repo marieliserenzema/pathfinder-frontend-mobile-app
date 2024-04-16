@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, Dispatch, SetStateAction, useEffect } from 'react';
 import UserModel from '../models/UserModel';
 import client from '../client/client';
+import HikeModel from '../models/HikeModel';
 
 interface UserContextProps {
   user: UserModel | undefined;
@@ -9,9 +10,8 @@ interface UserContextProps {
   logout: () => void;
   token: string | undefined;
   setToken: Dispatch<SetStateAction<string | undefined>>;
-  addToFavorite: (hikeId: string) => void;
-  removeFromFavorite: (hikeId: string) => void;
-  isFavorite: (hikeId: string) => boolean;
+  favoriteHikes: HikeModel[];
+  updateFavoriteHike: (hikeId: string) => void;
 }
 
 const UserContext = createContext<UserContextProps | undefined>(undefined);
@@ -19,7 +19,7 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 function UserProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<UserModel | undefined>(undefined);
   const [token, setToken] = useState<string | undefined>(undefined);
-  const [favorite, setFavorite] = useState<string[]>([]);
+  const [favoriteHikes, setFavoriteHikes] = useState<HikeModel[]>([]);
 
 
   const setUserInfo = async (token: string) => {
@@ -40,29 +40,34 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (token) {
       setUserInfo(token);
-      if (user) setFavorite(user.favorite);
+      fetchFavoriteHikes();
     } else {
       setUser(undefined)
     }
   }, [token]);
 
+
   const logout = () => {
     setUser(undefined)
-    setFavorite([]);
+    setFavoriteHikes([]);
     setToken(undefined);
   }
 
-  const addToFavorite = (hikeId: string) => {
-    setFavorite([...favorite, hikeId]);
+  const fetchFavoriteHikes = async () => {
+    if (!token) return;
+    const hikes = await client.getFavoriteHikes(token);
+    setFavoriteHikes(hikes);
   }
 
-  const removeFromFavorite = (hikeId: string) => {
-    setFavorite(favorite.filter(id => id !== hikeId));
+  const updateFavoriteHike = async (hikeId: string) => {
+    if (!token) return;
+    const response = await client.updateFavoriteHike(token, hikeId);
+    if (response) {
+      fetchFavoriteHikes();
+    }
   }
 
-  const isFavorite = (hikeId: string) => {
-    return favorite.includes(hikeId);
-  }
+
 
   return (
     <UserContext.Provider value={{
@@ -72,9 +77,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       logout,
       token,
       setToken,
-      addToFavorite,
-      isFavorite,
-      removeFromFavorite
+      favoriteHikes,
+      updateFavoriteHike
     }}>
       {children}
     </UserContext.Provider>
