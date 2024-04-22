@@ -17,6 +17,7 @@ interface HikeModel {
         website: string;
         operator: string;
     };
+    bbox: [number, number, number, number];
 }
 
 export default HikeModel;

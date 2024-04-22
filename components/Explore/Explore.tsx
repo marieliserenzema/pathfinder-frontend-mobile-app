@@ -7,7 +7,6 @@ import { useUserContext } from '../../contexts/UserContext';
 import Header from '../Header/Header';
 import MapScreen from "../Map/Map";
 
-
 export default function ExploreScreen() {
   const { token } = useUserContext();
   const [activeTab, setActiveTab] = useState('map');
@@ -29,7 +28,6 @@ export default function ExploreScreen() {
   const toggleTab = (tab: any) => {
     setActiveTab(tab);
   };
-
 
   return (
     <>
