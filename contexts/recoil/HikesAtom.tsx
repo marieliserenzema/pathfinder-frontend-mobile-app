@@ -2,9 +2,9 @@ import { atom, type RecoilState } from 'recoil';
 import HikeModel from "../../models/HikeModel";
 
 // @ts-ignore
-const hikesAtom : RecoilState<HikeModel[] | string> = atom({
+const hikesAtom : RecoilState<HikeModel[] | undefined>= atom({
     key: 'hikes',
-    default: "none"
+    default: undefined
 });
 
 export default hikesAtom;

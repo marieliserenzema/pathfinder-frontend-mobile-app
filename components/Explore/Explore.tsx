@@ -6,8 +6,8 @@ import { useUserContext } from '../../contexts/UserContext';
 import Header from '../Header/Header';
 import MapScreen from "../Map/Map";
 import {useRecoilState, useSetRecoilState} from "recoil";
-import hikesAtom from "../../contexts/atoms/HikesAtom";
-import locationAtom from "../../contexts/atoms/LocationAtom";
+import hikesAtom from "../../contexts/recoil/HikesAtom";
+import locationAtom from "../../contexts/recoil/LocationAtom";
 import * as Location from "expo-location";
 
 export default function ExploreScreen() {

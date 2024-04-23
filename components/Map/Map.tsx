@@ -5,45 +5,35 @@ import client from '../../client/client';
 import {useUserContext} from "../../contexts/UserContext";
 import HikeModel from "../../models/HikeModel";
 import {useRecoilState, useRecoilValue} from "recoil";
-import regionAtom from "../../contexts/atoms/RegionAtom";
-import locationAtom from "../../contexts/atoms/LocationAtom";
+import regionSelectorState from "../../contexts/recoil/RegionSelector";
+import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
 
 export default function MapScreen() {
     const {token} = useUserContext();
-    const [testHike , setTestHike] = useState<HikeModel>();
-    const [region, setRegion] = useRecoilState(regionAtom);
-    const location = useRecoilValue(locationAtom);
+    const [selectedHike, setSelectedHike] = useRecoilState(selectedHikeAtom);
+    const regionSelector = useRecoilValue(regionSelectorState);
 
     useEffect(() => {
         (async () => {
             console.log("useeffect map");
             if (!token) return;
             const oneHike: HikeModel = await client.getHikeById(token, "6627613a9ca4476ed56aac80");
-            setTestHike(oneHike);
-
-            if (typeof location == "string") return;
-            const userPositionRegion = {
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            };
-            setRegion(userPositionRegion);
+            setSelectedHike(oneHike);
         })();
     }, []);
 
     //todo use the region as a bbox to center on hikes when needed
-    //check if a hike is selected, if so center on it, else center on user location (not both a the same time)
+    //todo check if a hike is selected, if so center on it, else center on user location (not both a the same time)
 
     const hike = {
         type: 'FeatureCollection',
         features: [
             {
-                "type": testHike?.type,
-                "properties": testHike?.properties,
+                "type": selectedHike?.type,
+                "properties": selectedHike?.properties,
                 "geometry": {
-                  "type": testHike?.geometry.type,
-                  "coordinates": testHike?.geometry.coordinates,
+                  "type": selectedHike?.geometry.type,
+                  "coordinates": selectedHike?.geometry.coordinates,
                 }
               }
         ]
@@ -52,7 +42,7 @@ export default function MapScreen() {
     return (
         <View>
             <MapView style={{width: '100%', height: '100%'}}
-                     initialRegion={region}
+                     initialRegion={regionSelector}
                      showsUserLocation={true}
             >
                 <Geojson
