@@ -18,7 +18,7 @@ export default function ExploreScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    console.log("useeffect explore");
+    console.log("useEffect explore");
     const fetchHikes = async () => {
       try {
         if (!token) return;
@@ -54,7 +54,7 @@ export default function ExploreScreen() {
   };
 
   if(isLoading) {
-    return <View><Text>Pouet</Text></View>;
+    return <View />;
   } else {
     return (
         <>
@@ -79,7 +79,7 @@ export default function ExploreScreen() {
               <ScrollView style={styles.scroll_view}>
                 {hikes ? hikes.map((hike, index) => {
                   return <HikeComponent key={index} hike={hike}/>;
-                }) : null}
+                }) : null }
               </ScrollView>
           )}
         </>
