@@ -77,7 +77,7 @@ export default function ExploreScreen() {
               </View>
           ) : (
               <ScrollView style={styles.scroll_view}>
-                {typeof hikes !== "string" ? hikes.map((hike, index) => {
+                {hikes ? hikes.map((hike, index) => {
                   return <HikeComponent key={index} hike={hike}/>;
                 }) : null}
               </ScrollView>

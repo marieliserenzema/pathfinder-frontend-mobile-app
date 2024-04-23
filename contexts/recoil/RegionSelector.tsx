@@ -7,21 +7,7 @@ const regionSelectorState = selector({
     get: ({get}) => {
         const locationState = get(locationAtom);
         const selectedHike = get(selectedHikeAtom);
-        if (!selectedHike) {
-            if (!locationState) return {
-                //Paris
-                latitude: 48.8566,
-                longitude: 2.3522,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            };
-            return {
-                latitude: locationState.coords.latitude,
-                longitude: locationState.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-            };
-        } else {
+        if (selectedHike) {
             return {
                 latitude: selectedHike.geometry.coordinates[0][1],
                 longitude: selectedHike.geometry.coordinates[0][0],
@@ -29,6 +15,21 @@ const regionSelectorState = selector({
                 longitudeDelta: 0.0421,
             };
         }
+        if (!locationState) {
+            return {
+                //Paris
+                latitude: 48.8566,
+                longitude: 2.3522,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+        }
+        return {
+            latitude: locationState.coords.latitude,
+            longitude: locationState.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+        };
     }
 })
 
