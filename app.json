@@ -25,6 +25,15 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysPermission": "Allow Pathfinder to use your location.",
+          "isAndroidForegroundServiceEnabled": false
+        }
+      ]
+    ]
   }
 }

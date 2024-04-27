@@ -8,8 +8,6 @@ import CommunityScreen from '../components/Community/Community';
 import SavedScreen from '../components/Saved/Saved';
 import ProfileScreen from '../components/Profile/Profile';
 
-
-
 const Tab = createBottomTabNavigator();
 
 interface NavigationTabsProps {

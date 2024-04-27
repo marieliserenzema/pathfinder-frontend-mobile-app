@@ -21,7 +21,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
   const [token, setToken] = useState<string | undefined>(undefined);
   const [favoriteHikes, setFavoriteHikes] = useState<HikeModel[]>([]);
 
-
   const setUserInfo = async (token: string) => {
     const info: any = await client.getMeInfo(token);
     if (info) {
@@ -30,7 +29,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         username: info.username,
         email: info.email,
         password: info.password,
-        favorite: info.favorite,
+        favorites: info.favorite,
         role: info.role
       }
       setUser(newUser);
@@ -67,8 +66,6 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-
-
   return (
     <UserContext.Provider value={{
       user,
@@ -83,7 +80,7 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       {children}
     </UserContext.Provider>
   );
-};
+}
 
 const useUserContext = () => {
   const context = useContext(UserContext);
