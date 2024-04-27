@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import HikeModel from '../../models/HikeModel';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import {useRecoilState, useSetRecoilState} from "recoil";
+import {useSetRecoilState} from "recoil";
 import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
 import {useNavigation} from "@react-navigation/native";
 import tabAtom from "../../contexts/recoil/TabAtom";

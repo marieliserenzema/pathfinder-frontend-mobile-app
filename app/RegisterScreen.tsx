@@ -11,9 +11,7 @@ interface RegisterScreenProps {
 }
 
 const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
-
     const { setToken } = useUserContext();
-
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -36,9 +34,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
             navigation.navigate('Home');
         } catch (error) {
             console.error(error);
-            Alert.alert('Erreur', 'Il y a eu un problème avec votre création de compte. Veuillez réesayer.');
-
-
+            Alert.alert('Erreur', 'Il y a eu un problème avec votre création de compte. Veuillez réessayer.');
         }
     };
 
@@ -84,7 +80,7 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
                 <Text style={styles.errorText}>Mot de passe invalide</Text>
             }
             <TouchableOpacity onPress={handleRegister} style={canRegister ? styles.button : styles.disabledButton} disabled={!canRegister}>
-                <Text style={styles.textButton}> Se connecter </Text>
+                <Text style={styles.textButton}> S'inscrire</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={handleLogin} style={styles.registerButton}>
                 <Text style={styles.textButtonGreen}>Déjà un compte ? </Text>

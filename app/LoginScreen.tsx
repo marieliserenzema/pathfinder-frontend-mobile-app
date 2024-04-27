@@ -11,7 +11,6 @@ interface LoginScreenProps {
 }
 
 const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-
   const { setToken } = useUserContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,18 +18,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   const [passwordError, setPasswordError] = useState(false);
   const [canLogin, setCanLogin] = useState(false);
 
-
-
   useEffect(() => {
     setEmailError(validateCredentials.validateEmail(email));
     setPasswordError(validateCredentials.validatePassword(password));
     setCanLogin(emailError && passwordError);
   }, [email, password]);
 
-
   const handleLogin = async () => {
-    setEmail("test@test.fr");
-    setPassword("123Aze.123");
+    //setEmail("test@test.fr");
+    //setPassword("123Aze.123");
     try {
       const token: any = await client.login(email, password);
       if (token) {

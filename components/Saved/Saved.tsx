@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { useUserContext } from '../../contexts/UserContext';
 import HikeComponent from '../HikeComponent/HikeComponent';
 
 export default function SavedScreen() {
-
   const { favoriteHikes } = useUserContext();
 
   return (

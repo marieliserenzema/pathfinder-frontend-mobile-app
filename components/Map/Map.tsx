@@ -1,4 +1,4 @@
-import {Text, TouchableOpacity, View} from "react-native";
+import {View} from "react-native";
 import MapView, {Geojson, Marker} from "react-native-maps";
 import React, {useEffect, useState} from "react";
 import {useUserContext} from "../../contexts/UserContext";

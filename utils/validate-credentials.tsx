@@ -12,6 +12,4 @@ const validateUsername = (username: string): boolean => {
     return regex.test(username);
 }
 
-
-
 export default { validatePassword, validateEmail, validateUsername };
