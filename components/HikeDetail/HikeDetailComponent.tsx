@@ -1,34 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import HikeModel from '../../models/HikeModel';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import getTimeFromDistance from '../../utils/distance_to_hours';
-import { useUserContext } from '../../contexts/UserContext';
-import { useNavigation } from '@react-navigation/native';
+import {useRecoilState, useSetRecoilState} from "recoil";
+import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
+import {useNavigation} from "@react-navigation/native";
+import tabAtom from "../../contexts/recoil/TabAtom";
 
-export default function HikeComponent({ hike }: { hike: HikeModel }) {
-    const { favoriteHikes, updateFavoriteHike } = useUserContext();
+export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
+    const setSelectedHike = useSetRecoilState(selectedHikeAtom);
+    const setActiveTab = useSetRecoilState(tabAtom);
     const navigation = useNavigation();
 
-    const isFavorite = (id: string) => {
-        return favoriteHikes.some((hike) => hike._id === id);
-    }
-
-    const time = getTimeFromDistance(hike.properties.distance);
-    const handleFavorite = () => {
-        updateFavoriteHike(hike._id);
-    }
+    const handleSelectHike = () => {
+        setSelectedHike(hike);
+        setActiveTab('map');
+        // @ts-ignore
+        navigation.navigate('Home');
+    };
 
     return (
         <View style={styles.card}>
-            <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavorite}>
-                {
-                    isFavorite(hike._id) ?
-                        <AntDesign name="heart" size={16} color="white" /> :
-                        <AntDesign name="hearto" size={16} color="white" />
-                }
-            </TouchableOpacity>
             <View style={styles.container}>
                 <View style={styles.image_container}>
                     <Image
@@ -56,27 +49,18 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
                     </View>
                     <View style={styles.description}>
                         <AntDesign name="clockcircleo" size={16} color="#a3b18a" style={styles.icon} />
-                        <Text>
-                            {time}
-                        </Text>
                     </View>
                 </View>
             </View>
-            <TouchableOpacity style={styles.button} onPress={() => {
-                // @ts-ignore
-                navigation.navigate('HikeDetail', {
-                    hikeId: hike._id,
-                })
-            }}>
-                <Text style={styles.buttonText}>View Details</Text>
+            <TouchableOpacity style={styles.button} onPress={handleSelectHike}>
+                <Text style={styles.buttonText}>Show Hike</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 }
 
-const styles = StyleSheet.create({
+const styles= StyleSheet.create({
     card: {
-        flex: 1,
         backgroundColor: 'white',
         margin: '1%',
         borderRadius: 10,
@@ -128,16 +112,16 @@ const styles = StyleSheet.create({
         marginRight: '3%'
     },
     button: {
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
         backgroundColor: '#a3b18a',
-        paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
         borderRadius: 10,
+        alignSelf: 'center',
+        marginTop: 16,
     },
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
     },
+
 });

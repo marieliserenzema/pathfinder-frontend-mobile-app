@@ -1,14 +1,13 @@
-import { View } from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import MapView, {Geojson, Marker} from "react-native-maps";
 import React, {useEffect, useState} from "react";
-import client from '../../client/client';
 import {useUserContext} from "../../contexts/UserContext";
-import HikeModel from "../../models/HikeModel";
 import {useRecoilState, useRecoilValue} from "recoil";
 import regionSelectorState from "../../contexts/recoil/RegionSelector";
 import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
 import hikesAtom from "../../contexts/recoil/HikesAtom";
 import HikePinModel from "../../models/HikePinModel";
+import {useNavigation} from "@react-navigation/native";
 
 export default function MapScreen() {
     const {token} = useUserContext();
@@ -16,17 +15,17 @@ export default function MapScreen() {
     const regionSelector = useRecoilValue(regionSelectorState);
     const hikes = useRecoilValue(hikesAtom);
     const [hikesMarkers, setHikesMarkers] = useState<HikePinModel[]>([]);
+    const navigation = useNavigation();
 
     useEffect(() => {
         (async () => {
             console.log("useEffect map");
             if (!token) return;
-            const oneHike: HikeModel = await client.getHikeById(token, "6627c13d1fc1c89b5db6533a");
-            setSelectedHike(oneHike);
 
             if (hikes) {
                 hikes.map((hike, _) => {
                     const hikePin : HikePinModel = {
+                        id: hike._id,
                         latitude: hike.geometry.coordinates[0][1],
                         longitude: hike.geometry.coordinates[0][0],
                         name: hike.properties.name,
@@ -37,9 +36,6 @@ export default function MapScreen() {
             }
         })();
     }, []);
-
-    //todo use the region as a bbox to center on hikes when needed
-    //todo check if a hike is selected, if so center on it, else center on user location (not both a the same time)
 
     const selectedHikeDraw = {
         type: 'FeatureCollection',
@@ -55,8 +51,7 @@ export default function MapScreen() {
         ]
     };
 
-    //todo geojson to only appear with selected hike
-    //todo list of marker for pins
+    //todo create custom marker component, watch for performance
 
     return (
         <View>
@@ -69,8 +64,14 @@ export default function MapScreen() {
                             key={index}
                             coordinate={{latitude: hikeMarker.latitude, longitude: hikeMarker.longitude}}
                             title={hikeMarker.name}
-                            description={hikeMarker.description}
-                        />;
+                            onPress={event => {
+                                // @ts-ignore
+                                navigation.navigate('HikeDetail', {
+                                    hikeId: hikeMarker.id,
+                                })
+                            }}
+                        >
+                        </Marker>;
                     }) : [] }
                 <Geojson
                     geojson={selectedHikeDraw}

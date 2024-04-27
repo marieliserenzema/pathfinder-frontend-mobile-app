@@ -1,6 +1,6 @@
 async function login(email: string, password: string) {
   try {
-    const response = await fetch('https://8eb4-195-7-117-146.ngrok-free.app/auth/login', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -23,10 +23,9 @@ async function login(email: string, password: string) {
   }
 };
 
-
 const register = async (email: string, password: string, username: string) => {
   try {
-    const response = await fetch('https://8eb4-195-7-117-146.ngrok-free.app/auth/register', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/auth/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -50,10 +49,9 @@ const register = async (email: string, password: string, username: string) => {
   }
 };
 
-
 const getMeInfo = async (token: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/user/me', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/users/me', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -65,7 +63,7 @@ const getMeInfo = async (token: string) => {
       const user = await response.json();
       return user;
     } else {
-      console.error("Erreur lors de la requête:", response.statusText);
+      console.error("GetMe, erreur lors de la requête:", response.statusText);
       return null;
     }
   } catch (error) {
@@ -76,7 +74,7 @@ const getMeInfo = async (token: string) => {
 
 const getAllHikes = async (token: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/hike', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/hikes', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -87,18 +85,18 @@ const getAllHikes = async (token: string) => {
       const hikes = await response.json();
       return hikes;
     } else {
-      console.error("Erreur lors de la requête:", response.statusText);
+      console.error("AllHikes, erreur lors de la requête:", response.statusText);
       return null;
     }
   } catch (error) {
     console.error("Erreur:", error);
     return null;
   }
-}
+};
 
 const getHikeById = async (token: string, hikeId: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/hike/' + hikeId, {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/hikes/' + hikeId, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -109,7 +107,7 @@ const getHikeById = async (token: string, hikeId: string) => {
       const hike = await response.json();
       return hike;
     } else {
-      console.error("Erreur lors de la requête:", response.statusText);
+      console.error("HikeById, erreur lors de la requête:", response.statusText);
       return null;
     }
   } catch (error) {
@@ -120,7 +118,7 @@ const getHikeById = async (token: string, hikeId: string) => {
 
 const getFavoriteHikes = async (token: string) => {
   try {
-    const response = await fetch('http://127.0.0.1:3000/user/favorite', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/users/favorite', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -131,7 +129,7 @@ const getFavoriteHikes = async (token: string) => {
       const favorite = await response.json();
       return favorite;
     } else {
-      console.error("Erreur lors de la requête:", response.statusText);
+      console.error("FavoriteHikes, erreur lors de la requête:", response.statusText);
       return null;
     }
   } catch (error) {
@@ -143,7 +141,7 @@ const getFavoriteHikes = async (token: string) => {
 const updateFavoriteHike = async (token: string, hikeId: string) => {
   console.log(token);
   try {
-    const response = await fetch('http://127.0.0.1:3000/user/favorite', {
+    const response = await fetch('https://gorilla-honest-gull.ngrok-free.app/users/favorite', {
       method: 'PATCH',
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -156,7 +154,7 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
     if (response.ok) {
       return true;
     } else {
-      console.error("Erreur lors de la requête:", response.statusText);
+      console.error("UpdateFavorite, erreur lors de la requête:", response.statusText);
       return false;
     }
   } catch (error) {
@@ -164,7 +162,5 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
     return false;
   }
 }
-
-
 
 export default { login, register, getMeInfo, getAllHikes, getHikeById, updateFavoriteHike, getFavoriteHikes };

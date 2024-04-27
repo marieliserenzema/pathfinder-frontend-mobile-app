@@ -1,4 +1,5 @@
 interface HikePinModel {
+    id: string,
     latitude: number,
     longitude: number,
     name: string,

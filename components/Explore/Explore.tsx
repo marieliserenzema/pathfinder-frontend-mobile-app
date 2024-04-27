@@ -9,10 +9,11 @@ import {useRecoilState, useSetRecoilState} from "recoil";
 import hikesAtom from "../../contexts/recoil/HikesAtom";
 import locationAtom from "../../contexts/recoil/LocationAtom";
 import * as Location from "expo-location";
+import tabAtom from "../../contexts/recoil/TabAtom";
 
 export default function ExploreScreen() {
   const { token} = useUserContext();
-  const [activeTab, setActiveTab] = useState('map');
+  const [activeTab, setActiveTab] = useRecoilState(tabAtom);
   const [hikes, setHikes] = useRecoilState(hikesAtom);
   const setLocation = useSetRecoilState(locationAtom);
   const [isLoading, setIsLoading] = useState(true);
@@ -23,7 +24,7 @@ export default function ExploreScreen() {
       try {
         if (!token) return;
         const hikesData = await client.getAllHikes(token);
-        setHikes(hikesData.data);
+        setHikes(hikesData.items);
       } catch (error) {
         console.error(error);
       }
