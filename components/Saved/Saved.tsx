@@ -1,13 +1,14 @@
-import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
-import { useUserContext } from '../../contexts/UserContext';
-import HikeComponent from '../HikeComponent/HikeComponent';
+import React from "react";
+import { View, Text, ScrollView, StyleSheet } from "react-native";
+
+import { useUserContext } from "../../contexts/UserContext";
+import HikeComponent from "../HikeComponent/HikeComponent";
 
 export default function SavedScreen() {
   const { favoriteHikes } = useUserContext();
 
   return (
-    <View style={styles.container} >
+    <View style={styles.container}>
       {favoriteHikes.length === 0 ? (
         <View style={styles.emptyContainer}>
           <Text>😌</Text>
@@ -27,14 +28,13 @@ export default function SavedScreen() {
 const styles = StyleSheet.create({
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   container: {
     flex: 1,
   },
   scrollView: {
     flex: 1,
-  }
+  },
 });
-

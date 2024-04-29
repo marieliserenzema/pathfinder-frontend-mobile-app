@@ -1,9 +1,16 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, Image } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Avatar, ListItem } from 'react-native-elements';
-import { useUserContext } from '../../contexts/UserContext';
-import { NavigationProp } from '@react-navigation/native';
+import { MaterialIcons } from "@expo/vector-icons";
+import { NavigationProp } from "@react-navigation/native";
+import React from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
+import { Avatar, ListItem } from "react-native-elements";
+
+import { useUserContext } from "../../contexts/UserContext";
 
 interface ProfileScreenProps {
   navigation: NavigationProp<any>;
@@ -14,8 +21,8 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
 
   const logoutnav = () => {
     logout();
-    navigation.navigate('Login');
-  }
+    navigation.navigate("Login");
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,7 +33,12 @@ const ProfileScreen: React.FC<ProfileScreenProps> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.header}>
-        <Avatar rounded source={require('../../assets/avatar.png')} size="xlarge" containerStyle={styles.avatar} />
+        <Avatar
+          rounded
+          source={require("../../assets/avatar.png")}
+          size="xlarge"
+          containerStyle={styles.avatar}
+        />
         <Text style={styles.name}>{user!.username}</Text>
       </View>
       <View style={styles.body}>
@@ -61,37 +73,37 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   titleText: {
     fontSize: 20,
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   editButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 20,
   },
   editButtonText: {
-    color: '#a3b18a',
-    fontWeight: 'bold',
+    color: "#a3b18a",
+    fontWeight: "bold",
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   avatar: {
     borderWidth: 5,
-    borderColor: '#a3b18a',
+    borderColor: "#a3b18a",
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   username: {
     fontSize: 16,
-    color: 'gray',
+    color: "gray",
     marginBottom: 20,
   },
   body: {
@@ -101,9 +113,6 @@ const styles = StyleSheet.create({
   logoutButton: {
     marginTop: 20,
   },
-
 });
 
 export default ProfileScreen;
-
-

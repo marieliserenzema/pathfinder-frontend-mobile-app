@@ -1,7 +1,15 @@
-import React, { createContext, useState, useContext, Dispatch, SetStateAction, useEffect } from 'react';
-import UserModel from '../models/UserModel';
-import client from '../client/client';
-import HikeModel from '../models/HikeModel';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
+
+import client from "../client/client";
+import HikeModel from "../models/HikeModel";
+import UserModel from "../models/UserModel";
 
 interface UserContextProps {
   user: UserModel | undefined;
@@ -30,8 +38,8 @@ function UserProvider({ children }: { children: React.ReactNode }) {
         email: info.email,
         password: info.password,
         favorites: info.favorite,
-        role: info.role
-      }
+        role: info.role,
+      };
       setUser(newUser);
     }
   };
@@ -41,22 +49,21 @@ function UserProvider({ children }: { children: React.ReactNode }) {
       setUserInfo(token);
       fetchFavoriteHikes();
     } else {
-      setUser(undefined)
+      setUser(undefined);
     }
   }, [token]);
 
-
   const logout = () => {
-    setUser(undefined)
+    setUser(undefined);
     setFavoriteHikes([]);
     setToken(undefined);
-  }
+  };
 
   const fetchFavoriteHikes = async () => {
     if (!token) return;
     const hikes = await client.getFavoriteHikes(token);
     setFavoriteHikes(hikes);
-  }
+  };
 
   const updateFavoriteHike = async (hikeId: string) => {
     if (!token) return;
@@ -64,19 +71,21 @@ function UserProvider({ children }: { children: React.ReactNode }) {
     if (response) {
       fetchFavoriteHikes();
     }
-  }
+  };
 
   return (
-    <UserContext.Provider value={{
-      user,
-      setUser,
-      setUserInfo,
-      logout,
-      token,
-      setToken,
-      favoriteHikes,
-      updateFavoriteHike
-    }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        setUserInfo,
+        logout,
+        token,
+        setToken,
+        favoriteHikes,
+        updateFavoriteHike,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );
@@ -85,12 +94,11 @@ function UserProvider({ children }: { children: React.ReactNode }) {
 const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error("useUserContext doit être utilisé à l'intérieur de UserProvider");
+    throw new Error(
+      "useUserContext doit être utilisé à l'intérieur de UserProvider",
+    );
   }
   return context;
 };
 
 export { UserContext, useUserContext, UserProvider };
-
-
-

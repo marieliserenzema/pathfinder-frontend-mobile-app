@@ -1,29 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import HikeDetailComponent from "../components/HikeDetail/HikeDetailComponent";
-import client from '../client/client'
-import { useUserContext } from "../contexts/UserContext";
-import HikeModel from "../models/HikeModel";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 
+import client from "../client/client";
+import HikeDetailComponent from "../components/HikeDetail/HikeDetailComponent";
+import { useUserContext } from "../contexts/UserContext";
+import HikeModel from "../models/HikeModel";
+
 export default function HikeDetailScreen({ route }) {
-    const { token } = useUserContext();
-    const [oneHike, setOneHike] = useState<HikeModel | null>(null);
-    const hikeId = route.params.hikeId;
+  const { token } = useUserContext();
+  const [oneHike, setOneHike] = useState<HikeModel | null>(null);
+  const hikeId = route.params.hikeId;
 
-    useEffect(() => {
-        (async () => {
-            console.log("useEffect detail");
-            if (!token) return;
-            const newHike: HikeModel = await client.getHikeById(token, hikeId);
-            setOneHike(newHike);
-        })();
-    }, [token, hikeId]);
+  useEffect(() => {
+    (async () => {
+      console.log("useEffect detail");
+      if (!token) return;
+      const newHike: HikeModel = await client.getHikeById(token, hikeId);
+      setOneHike(newHike);
+    })();
+  }, [token, hikeId]);
 
-    if (oneHike) {
-        return (
-            <View>
-                <HikeDetailComponent hike={oneHike} />
-            </View>
-        );
-    }
-};
+  if (oneHike) {
+    return (
+      <View>
+        <HikeDetailComponent hike={oneHike} />
+      </View>
+    );
+  }
+}
