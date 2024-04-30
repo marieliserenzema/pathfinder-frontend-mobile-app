@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import MapView, { Geojson } from "react-native-maps";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 import client from "../../client/client";
 import { useUserContext } from "../../contexts/UserContext";
@@ -29,6 +29,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const setActiveTab = useSetRecoilState(tabAtom);
   const navigation = useNavigation();
   const setComments = useSetRecoilState(commentsListAtom);
+  const comment = useRecoilValue(commentsListAtom);
 
   useEffect(() => {
     console.log("useEffect comment");
@@ -36,7 +37,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
     client
       .getAllCommentsByHike(token, hike._id)
       .then((r: CommentModel[]) => setComments(r));
-  }, [hike._id, setComments, token]);
+  }, [hike._id, token]);
 
   const screenHeight = Dimensions.get("window").height;
   const mapHeight = screenHeight * 0.4; // 40% of the screen height

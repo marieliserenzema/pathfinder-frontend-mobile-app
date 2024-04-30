@@ -11,7 +11,7 @@ const CommentComponent: React.FC = () => {
     <View style={styles.container}>
       <View style={styles.commentsContainer}>
         <ScrollView>
-          {comments
+          {comments.length
             ? comments.map((comment, index) => (
                 <View style={styles.comment} key={index}>
                   <Image

@@ -20,7 +20,6 @@ interface CommentComponentProps {
 const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
   const { token, user } = useUserContext();
   const [commentText, setCommentText] = useState("");
-  const [newComment, setNewComment] = useState<CommentModel>();
   const [comments, setComments] = useRecoilState(commentsListAtom);
 
   const handleCommentSubmit = () => {
@@ -28,13 +27,10 @@ const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
     if (!user) return;
     client
       .createComment(token, user._id, hikeId, commentText)
-      .then((r: CommentModel) => (setCommentText(""), setNewComment(r)));
-
-    // ne fonctionne pas
-    if (!newComment) return;
-    const tempComments: CommentModel[] = comments;
-    tempComments.push(newComment);
-    setComments(tempComments);
+      .then((r: CommentModel) => {
+        setCommentText("")
+        setComments([r, ...comments]);
+      });
   };
 
   return (
