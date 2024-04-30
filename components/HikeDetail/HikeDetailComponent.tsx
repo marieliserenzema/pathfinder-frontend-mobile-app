@@ -65,7 +65,6 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
 
   //todo boucle sur les étoiles et afficher le type d'étoiles selon le compte
   //todo check map limit
-  //todo render
 
   return (
     <ScrollView style={styles.container}>

@@ -1,5 +1,7 @@
 import CommentModel from "../models/CommentModel";
 
+//todo env avec le lien server
+
 async function login(email: string, password: string) {
   try {
     const response = await fetch(
@@ -21,6 +23,7 @@ async function login(email: string, password: string) {
       const accessToken = data.access_token;
       return accessToken;
     } else {
+      console.error("Login, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -51,6 +54,7 @@ const register = async (email: string, password: string, username: string) => {
       const accessToken = data.access_token;
       return accessToken;
     } else {
+      console.error("Register, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -76,7 +80,7 @@ const getMeInfo = async (token: string) => {
       const user = await response.json();
       return user;
     } else {
-      console.error("GetMe, erreur lors de la requête:", response.statusText);
+      console.error("GetMe, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -101,10 +105,7 @@ const getAllHikes = async (token: string) => {
       const hikes = await response.json();
       return hikes;
     } else {
-      console.error(
-        "AllHikes, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("AllHikes, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -129,10 +130,7 @@ const getHikeById = async (token: string, hikeId: string) => {
       const hike = await response.json();
       return hike;
     } else {
-      console.error(
-        "HikeById, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("HikeById, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -157,10 +155,7 @@ const getFavoriteHikes = async (token: string) => {
       const favorite = await response.json();
       return favorite;
     } else {
-      console.error(
-        "FavoriteHikes, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("FavoriteHikes, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -188,10 +183,7 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
     if (response.ok) {
       return true;
     } else {
-      console.error(
-        "UpdateFavorite, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("UpdateFavorite, erreur lors de la requête");
       return false;
     }
   } catch (error) {
@@ -219,10 +211,7 @@ const getAllCommentsByHike = async (token: string, hikeId: string) => {
       );
       return comments;
     } else {
-      console.error(
-        "AllComments, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("AllComments, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -256,10 +245,7 @@ const createComment = async (
     if (response.ok) {
       return response.json();
     } else {
-      console.error(
-        "New comment, erreur lors de la requête:",
-        response.statusText,
-      );
+      console.error("New comment, erreur lors de la requête");
       return null;
     }
   } catch (error) {
