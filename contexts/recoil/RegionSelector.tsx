@@ -1,7 +1,7 @@
 import { selector } from "recoil";
 
 import locationAtom from "./LocationAtom";
-import selectedHikeAtom from "./selectedHikeAtom";
+import selectedHikeAtom from "./SelectedHikeAtom";
 
 const regionSelectorState = selector({
   key: "regionSelector",

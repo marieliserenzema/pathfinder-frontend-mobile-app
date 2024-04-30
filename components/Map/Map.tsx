@@ -7,7 +7,7 @@ import { useRecoilValue } from "recoil";
 import { useUserContext } from "../../contexts/UserContext";
 import hikesAtom from "../../contexts/recoil/HikesAtom";
 import regionSelectorState from "../../contexts/recoil/RegionSelector";
-import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
+import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import HikePinModel from "../../models/HikePinModel";
 
 export default function MapScreen() {

@@ -1,3 +1,5 @@
+import CommentModel from "../models/CommentModel";
+
 async function login(email: string, password: string) {
   try {
     const response = await fetch(
@@ -212,6 +214,9 @@ const getAllCommentsByHike = async (token: string, hikeId: string) => {
     );
     if (response.ok) {
       const comments = await response.json();
+      comments.sort((a: CommentModel, b: CommentModel) =>
+        new Date(b.date) > new Date(a.date) ? 1 : -1,
+      );
       return comments;
     } else {
       console.error(
@@ -233,18 +238,30 @@ const createComment = async (
   text: string,
 ) => {
   try {
-    await fetch("https://gorilla-honest-gull.ngrok-free.app/comments", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const response = await fetch(
+      "https://gorilla-honest-gull.ngrok-free.app/comments",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text,
+          hikeId,
+          userId,
+        }),
       },
-      body: JSON.stringify({
-        text,
-        hikeId,
-        userId,
-      }),
-    });
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error(
+        "New comment, erreur lors de la requête:",
+        response.statusText,
+      );
+      return null;
+    }
   } catch (error) {
     console.error("Erreur:", error);
     return null;
