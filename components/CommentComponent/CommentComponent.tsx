@@ -8,42 +8,37 @@ const CommentComponent: React.FC = () => {
   const comments = useRecoilValue(CommentsListAtom);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.commentsContainer}>
-        <ScrollView>
-          {comments.length
-            ? comments.map((comment, index) => (
-                <View style={styles.comment} key={index}>
-                  <Image
-                    style={styles.profilePicture}
-                    source={require("../../assets/avatar.png")}
-                  />
-                  <View style={styles.commentDetails}>
-                    <Text style={styles.username}>{comment.user.username}</Text>
-                    <Text style={styles.commentText}>{comment.text}</Text>
-                  </View>
-                </View>
-              ))
-            : []}
-        </ScrollView>
-      </View>
-    </View>
+    <>
+      {
+        comments.length > 0
+          ? comments.map((comment, index) => (
+            <View style={styles.comment} key={index}>
+              <Image
+                style={styles.profilePicture}
+                source={require("../../assets/avatar.png")}
+              />
+              <View style={styles.commentDetails}>
+                <Text style={styles.username}>{comment.user.username}</Text>
+                <Text style={styles.commentText}>{comment.text}</Text>
+              </View>
+            </View>
+          ))
+          : <View style={styles.emptyContainer}>
+            <Text>😌</Text>
+            <Text>Aucun avis pour cette randonée</Text>
+          </View>
+      }
+    </>
+
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    margin: "1%",
-    elevation: 2,
-    padding: "1%",
-  },
-  commentsContainer: {
-    minHeight: 100,
-  },
   comment: {
     display: "flex",
     flexDirection: "row",
-    marginTop: "1%",
+    paddingVertical: 2,
+    marginVertical: 10,
   },
   profilePicture: {
     width: 50,
@@ -63,9 +58,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: "1%",
   },
-  creationDate: {
-    fontSize: 12,
-    color: "#ccc",
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    paddingVertical: 10,
   },
 });
 

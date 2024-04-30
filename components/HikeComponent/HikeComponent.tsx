@@ -20,6 +20,13 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
     updateFavoriteHike(hike._id);
   };
 
+  const navigateToHikeDetail = () => {
+    // @ts-ignore
+    navigation.navigate("HikeDetail", {
+      hikeId: hike._id,
+    });
+  }
+
   return (
     <View style={styles.card}>
       <TouchableOpacity style={styles.favoriteIcon} onPress={handleFavorite}>
@@ -71,14 +78,8 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
       </View>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          // @ts-ignore
-          navigation.navigate("HikeDetail", {
-            hikeId: hike._id,
-          });
-        }}
-      >
-        <Text style={styles.buttonText}>View Details</Text>
+        onPress={navigateToHikeDetail}>
+        <Text style={styles.buttonText}>Voir plus</Text>
       </TouchableOpacity>
     </View>
   );
@@ -141,12 +142,12 @@ const styles = StyleSheet.create({
     bottom: 10,
     right: 10,
     backgroundColor: "#a3b18a",
+
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 10,
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
   },
 });

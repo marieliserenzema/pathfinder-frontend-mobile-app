@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { NavigationProp } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
