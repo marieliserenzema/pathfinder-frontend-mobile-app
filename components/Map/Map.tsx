@@ -23,18 +23,18 @@ export default function MapScreen() {
     if (!token) return;
 
     if (hikes) {
-      hikes.map((hike, _) => {
-        const hikePin: HikePinModel = {
+      const hikesMarkers = hikes.map((hike, _) => {
+        return {
           id: hike._id,
           latitude: hike.geometry.coordinates[0][1],
           longitude: hike.geometry.coordinates[0][0],
           name: hike.properties.name,
           description: hike.properties.description,
         };
-        setHikesMarkers((hikesMarkers) => [...hikesMarkers, hikePin]);
       });
+      setHikesMarkers(hikesMarkers);
     }
-  }, []);
+  }, [hikes]);
 
   const selectedHikeDraw = {
     type: "FeatureCollection",
@@ -59,7 +59,7 @@ export default function MapScreen() {
         region={regionSelector}
         showsUserLocation
       >
-        {hikesMarkers
+        {hikesMarkers.length
           ? hikesMarkers.map((hikeMarker, index) => {
               return (
                 <Marker
