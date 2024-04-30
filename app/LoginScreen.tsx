@@ -32,13 +32,15 @@ const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
   }, [email, password]);
 
   const handleLogin = async () => {
-    //setEmail("test@test.fr");
-    //setPassword("123Aze.123");
+    setEmail("test@test.fr");
+    setPassword("123Aze.123");
     try {
       const token: any = await client.login(email, password);
       if (token) {
         setToken(token);
         navigation.navigate("Home");
+      } else {
+        Alert.alert("Erreur", "Adresse email ou mot de passe invalide.");
       }
     } catch (error) {
       Alert.alert("Erreur", "Adresse email ou mot de passe invalide.");
