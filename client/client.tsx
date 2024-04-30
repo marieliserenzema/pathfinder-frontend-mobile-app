@@ -1,7 +1,5 @@
 import CommentModel from "../models/CommentModel";
 
-//todo env avec le lien server
-
 async function login(email: string, password: string) {
   try {
     const response = await fetch(
