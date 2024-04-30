@@ -6,7 +6,7 @@ import HikeDetailComponent from "../components/HikeDetail/HikeDetailComponent";
 import { useUserContext } from "../contexts/UserContext";
 import HikeModel from "../models/HikeModel";
 
-export default function HikeDetailScreen({ route }) {
+export default function HikeDetailScreen({ route }: { route: any }) {
   const { token } = useUserContext();
   const [oneHike, setOneHike] = useState<HikeModel | null>(null);
   const hikeId = route.params.hikeId;

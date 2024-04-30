@@ -79,8 +79,6 @@ const getMeInfo = async (token: string) => {
 };
 
 const updateMeInfoWithoutPassword = async (token: string, username: string, email: string) => {
-  console.log("updateMeInfoWithoutPassword");
-  console.log(username, email);
   try {
     const response = await fetch("https://gorilla-honest-gull.ngrok-free.app/users", {
       method: 'PATCH',
@@ -106,8 +104,6 @@ const updateMeInfoWithoutPassword = async (token: string, username: string, emai
 }
 
 const updateMeInfoWithPassword = async (token: string, username: string, email: string, password: string) => {
-  console.log("updateMeInfoWithPassword");
-
   try {
     const response = await fetch("https://gorilla-honest-gull.ngrok-free.app/users", {
       method: 'PATCH',
@@ -116,9 +112,9 @@ const updateMeInfoWithPassword = async (token: string, username: string, email: 
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        username,
-        email,
-        password
+        username: username,
+        email: email,
+        password: password
       })
     });
     if (response.ok) {
@@ -173,6 +169,34 @@ const getHikeById = async (token: string, hikeId: string) => {
       return hike;
     } else {
       console.error("HikeById, erreur lors de la requête");
+      return null;
+    }
+  } catch (error) {
+    console.error("Erreur:", error);
+    return null;
+  }
+};
+
+const getHikeByLocation = async (token: string, location: string) => {
+  try {
+
+    const apiUrl = `${process.env.EXPO_PUBLIC_API_URL}/hikes/?property=from&value=${encodeURIComponent(location)}`;
+    const response = await fetch(
+      apiUrl,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+
+      },
+    );
+    if (response.ok) {
+      const hike = await response.json();
+      return hike;
+    } else {
+      console.error("HikeByLocation, erreur lors de la requête");
       return null;
     }
   } catch (error) {
@@ -307,5 +331,6 @@ export default {
   getAllCommentsByHike,
   createComment,
   updateMeInfoWithoutPassword,
-  updateMeInfoWithPassword
+  updateMeInfoWithPassword,
+  getHikeByLocation,
 };
