@@ -5,7 +5,7 @@ import CommentModel from "../models/CommentModel";
 async function login(email: string, password: string) {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/auth/login",
+      process.env.EXPO_PUBLIC_API_URL + "/auth/login",
       {
         method: "POST",
         headers: {
@@ -35,7 +35,7 @@ async function login(email: string, password: string) {
 const register = async (email: string, password: string, username: string) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/auth/register",
+      process.env.EXPO_PUBLIC_API_URL + "/auth/register",
       {
         method: "POST",
         headers: {
@@ -66,7 +66,7 @@ const register = async (email: string, password: string, username: string) => {
 const getMeInfo = async (token: string) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/users/me",
+      process.env.EXPO_PUBLIC_API_URL + "/users/me",
       {
         method: "GET",
         headers: {
@@ -91,16 +91,13 @@ const getMeInfo = async (token: string) => {
 
 const getAllHikes = async (token: string) => {
   try {
-    const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/hikes",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
+    const response = await fetch(process.env.EXPO_PUBLIC_API_URL + "/hikes", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     if (response.ok) {
       const hikes = await response.json();
       return hikes;
@@ -117,7 +114,7 @@ const getAllHikes = async (token: string) => {
 const getHikeById = async (token: string, hikeId: string) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/hikes/" + hikeId,
+      process.env.EXPO_PUBLIC_API_URL + "/hikes/" + hikeId,
       {
         method: "GET",
         headers: {
@@ -142,7 +139,7 @@ const getHikeById = async (token: string, hikeId: string) => {
 const getFavoriteHikes = async (token: string) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/users/favorite",
+      process.env.EXPO_PUBLIC_API_URL + "/users/favorite",
       {
         method: "GET",
         headers: {
@@ -168,7 +165,7 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
   console.log(token);
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/users/favorite",
+      process.env.EXPO_PUBLIC_API_URL + "/users/favorite",
       {
         method: "PATCH",
         headers: {
@@ -195,7 +192,7 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
 const getAllCommentsByHike = async (token: string, hikeId: string) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/comments/hike/" + hikeId,
+      process.env.EXPO_PUBLIC_API_URL + "/comments/hike/" + hikeId,
       {
         method: "GET",
         headers: {
@@ -228,7 +225,7 @@ const createComment = async (
 ) => {
   try {
     const response = await fetch(
-      "https://gorilla-honest-gull.ngrok-free.app/comments",
+      process.env.EXPO_PUBLIC_API_URL + "/comments",
       {
         method: "POST",
         headers: {

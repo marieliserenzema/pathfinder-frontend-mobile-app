@@ -11,7 +11,7 @@ import {
   Dimensions,
 } from "react-native";
 import MapView, { Geojson } from "react-native-maps";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useSetRecoilState } from "recoil";
 
 import client from "../../client/client";
 import { useUserContext } from "../../contexts/UserContext";
@@ -29,7 +29,6 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const setActiveTab = useSetRecoilState(tabAtom);
   const navigation = useNavigation();
   const setComments = useSetRecoilState(commentsListAtom);
-  const comment = useRecoilValue(commentsListAtom);
 
   useEffect(() => {
     console.log("useEffect comment");
@@ -64,7 +63,6 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   };
 
   //todo boucle sur les étoiles et afficher le type d'étoiles selon le compte
-  //todo check map limit
 
   return (
     <ScrollView style={styles.container}>
