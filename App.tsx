@@ -35,7 +35,7 @@ export default function App() {
             <Stack.Screen
               name="HikeDetail"
               component={HikeDetailScreen}
-              options={{ headerShown: true }}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>

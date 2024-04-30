@@ -12,6 +12,8 @@ import client from "../../client/client";
 import { useUserContext } from "../../contexts/UserContext";
 import commentsListAtom from "../../contexts/recoil/CommentsListAtom";
 import CommentModel from "../../models/CommentModel";
+import { AntDesign } from '@expo/vector-icons';
+
 
 interface CommentComponentProps {
   hikeId: string;
@@ -35,16 +37,14 @@ const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.textInput}
-          value={commentText}
-          onChangeText={(text) => setCommentText(text)}
-          placeholder="Ecrire un commentaire..."
-        />
-        <TouchableOpacity style={styles.button} onPress={handleCommentSubmit}>
-          <Text style={styles.buttonText}> Commenter </Text>
-        </TouchableOpacity>
+      <TextInput
+        style={styles.textInput}
+        value={commentText}
+        onChangeText={(text) => setCommentText(text)}
+        placeholder="Ecrire un avis..."
+      />
+      <View style={styles.iconContainer}>
+        <AntDesign name="plus" size={20} color="white" onPress={handleCommentSubmit} />
       </View>
     </View>
   );
@@ -52,33 +52,21 @@ const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
 
 const styles = StyleSheet.create({
   container: {
-    margin: "1%",
-    padding: "1%",
-  },
-  inputContainer: {
+    padding: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "1%",
-  },
-  textInput: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 10,
-    padding: "1%",
+    borderRadius: 20,
+  },
+  textInput: {
     flex: 1,
-    marginRight: "1%",
   },
-  button: {
-    backgroundColor: "#a3b18a",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    alignSelf: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
+  iconContainer: {
+    padding: 5,
+    backgroundColor: '#a3b18a',
+    borderRadius: 15,
   },
 });
 
