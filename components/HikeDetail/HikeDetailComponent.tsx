@@ -1,6 +1,6 @@
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -8,19 +8,39 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import MapView, { Geojson } from "react-native-maps";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
+import client from "../../client/client";
+import { useUserContext } from "../../contexts/UserContext";
+import commentsListAtom from "../../contexts/recoil/CommentsListAtom";
+import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import tabAtom from "../../contexts/recoil/TabAtom";
-import selectedHikeAtom from "../../contexts/recoil/selectedHikeAtom";
+import CommentModel from "../../models/CommentModel";
 import HikeModel from "../../models/HikeModel";
 import CommentComponent from "../CommentComponent/CommentComponent";
+import EntryComponent from "../CommentComponent/EntryComponent";
 
 export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
+  const { token } = useUserContext();
   const setSelectedHike = useSetRecoilState(selectedHikeAtom);
   const setActiveTab = useSetRecoilState(tabAtom);
   const navigation = useNavigation();
+  const setComments = useSetRecoilState(commentsListAtom);
+  const comment = useRecoilValue(commentsListAtom);
+
+  useEffect(() => {
+    console.log("useEffect comment");
+    if (!token) return;
+    client
+      .getAllCommentsByHike(token, hike._id)
+      .then((r: CommentModel[]) => setComments(r));
+  }, [hike._id, token]);
+
+  const screenHeight = Dimensions.get("window").height;
+  const mapHeight = screenHeight * 0.4; // 40% of the screen height
 
   const handleSelectHike = () => {
     setSelectedHike(hike);
@@ -44,6 +64,8 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   };
 
   //todo boucle sur les étoiles et afficher le type d'étoiles selon le compte
+  //todo check map limit
+  //todo render
 
   return (
     <ScrollView style={styles.container}>
@@ -90,7 +112,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
       </TouchableOpacity>
       <Text style={styles.descriptionText}>{hike.properties.description}</Text>
       <MapView
-        style={{ width: "100%", height: "40%", padding: "1%" }}
+        style={{ width: "100%", height: mapHeight, padding: "1%" }}
         region={{
           latitude: hike.geometry.coordinates[0][1],
           longitude: hike.geometry.coordinates[0][0],
@@ -106,7 +128,9 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
         />
       </MapView>
       <View style={styles.commentSection}>
-        <CommentComponent hikeId={hike._id} />
+        <Text style={styles.commentSectionTitle}>Commentaires</Text>
+        <EntryComponent hikeId={hike._id} />
+        <CommentComponent />
       </View>
     </ScrollView>
   );
@@ -115,9 +139,8 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
 const styles = StyleSheet.create({
   container: {
     margin: "1%",
-    overflow: "hidden",
-    elevation: 3,
     padding: "1%",
+    elevation: 3,
   },
   details_container: {
     display: "flex",
@@ -176,7 +199,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   commentSection: {
-    marginTop: 20,
-    // Add more styles as needed
+    padding: "1%",
+    borderRadius: 10,
+    elevation: 3,
+    backgroundColor: "#f9f9f9",
+    minHeight: 200,
+  },
+  commentSectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#a3b18a",
+    marginBottom: "1%",
   },
 });
