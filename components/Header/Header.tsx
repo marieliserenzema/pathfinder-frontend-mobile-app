@@ -1,12 +1,12 @@
-import { AntDesign } from "@expo/vector-icons";
 import React from "react";
 import { View, StyleSheet, Image } from "react-native";
+import SearchBar from "../SearchBar/SearchBar";
 
 export default function Header() {
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={require("../../assets/icon.png")} />
-      <AntDesign name="search1" size={30} color="red" />
+      <SearchBar />
     </View>
   );
 }

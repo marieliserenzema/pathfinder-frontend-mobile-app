@@ -49,9 +49,9 @@ export default function ExploreScreen() {
         const userLocation = await Location.getCurrentPositionAsync({});
         console.log(
           "latitude: " +
-            userLocation.coords.latitude +
-            ", longitude: " +
-            userLocation.coords.longitude,
+          userLocation.coords.latitude +
+          ", longitude: " +
+          userLocation.coords.longitude,
         );
         setLocation(userLocation);
         setIsLoading(false);
@@ -97,13 +97,20 @@ export default function ExploreScreen() {
             <MapScreen />
           </View>
         ) : (
-          <ScrollView style={styles.scroll_view}>
-            {hikes
-              ? hikes.map((hike, index) => {
-                  return <HikeComponent key={index} hike={hike} />;
-                })
-              : null}
-          </ScrollView>
+          <>
+            {hikes && hikes.length > 0 ? (
+              <ScrollView style={styles.scroll_view}>
+                {hikes.map((hike, index) => (
+                  <HikeComponent key={index} hike={hike} />
+                ))}
+              </ScrollView>
+            ) : (
+              <View style={styles.emptyContainer}>
+                <Text>😌</Text>
+                <Text>Aucune randonnée trouvé dans ce lieu</Text>
+              </View>
+            )}
+          </>
         )}
       </>
     );
@@ -137,5 +144,10 @@ const styles = StyleSheet.create({
     flex: 1,
     height: "100%",
     width: "100%",
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
