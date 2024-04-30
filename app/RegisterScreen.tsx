@@ -41,8 +41,13 @@ const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
         password,
         username,
       );
-      if (token) setToken(token);
-      navigation.navigate("Home");
+      if (token) {
+        setToken(token);
+        navigation.navigate("Home");
+      }
+      else {
+        Alert.alert("Erreur", "Il y a eu un problème avec votre création de compte. Veuillez réessayer.");
+      }
     } catch (error) {
       console.error(error);
       Alert.alert(
