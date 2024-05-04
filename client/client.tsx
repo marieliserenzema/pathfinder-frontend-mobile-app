@@ -320,6 +320,33 @@ const createComment = async (
   }
 };
 
+const updateStars = async (token: string, hikeId: string, stars: number) => {
+  try {
+    const response = await fetch(
+      process.env.EXPO_PUBLIC_API_URL + "/hikes/" + hikeId,
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stars,
+        }),
+      },
+    );
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error("Update stars, erreur lors de la requête");
+      return null;
+    }
+  } catch (error) {
+    console.error("Erreur:", error);
+    return null;
+  }
+};
+
 export default {
   login,
   register,
@@ -333,4 +360,5 @@ export default {
   updateMeInfoWithoutPassword,
   updateMeInfoWithPassword,
   getHikeByLocation,
+  updateStars,
 };
