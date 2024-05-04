@@ -5,9 +5,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
 } from "react-native";
 import MapView, { Geojson } from "react-native-maps";
@@ -21,9 +19,9 @@ import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import tabAtom from "../../contexts/recoil/TabAtom";
 import CommentModel from "../../models/CommentModel";
 import HikeModel from "../../models/HikeModel";
+import getTimeFromDistance from "../../utils/distance_to_hours";
 import CommentComponent from "../CommentComponent/CommentComponent";
 import EntryComponent from "../CommentComponent/EntryComponent";
-import getTimeFromDistance from "../../utils/distance_to_hours";
 
 export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const { token } = useUserContext();
@@ -76,7 +74,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
       console.error(error);
     }
   };
-  
+
   const time = getTimeFromDistance(hike.properties.distance);
 
   const handleUpdateStars = (star: number) => {
@@ -123,14 +121,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
       </MapView>
       <View style={styles.container}>
         <Text style={styles.title}>{hike.properties.name}</Text>
-        <View style={styles.rating}>
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="staro" size={16} color="#a3b18a" />
-          <AntDesign name="staro" size={16} color="#a3b18a" />
-        </View>
-
+        {renderStars()}
         <Text style={styles.descriptionText}>
           {hike.properties.description}
         </Text>
