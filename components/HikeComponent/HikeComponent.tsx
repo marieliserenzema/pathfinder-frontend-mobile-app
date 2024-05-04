@@ -1,6 +1,6 @@
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import { useUserContext } from "../../contexts/UserContext";
@@ -8,8 +8,16 @@ import HikeModel from "../../models/HikeModel";
 import getTimeFromDistance from "../../utils/distance_to_hours";
 
 export default function HikeComponent({ hike }: { hike: HikeModel }) {
+  const { token } = useUserContext();
   const { favoriteHikes, updateFavoriteHike } = useUserContext();
   const navigation = useNavigation();
+  const [stars, setStars] = useState<number>(0);
+
+  useEffect(() => {
+    console.log("useEffect hikelist");
+    if (!token) return;
+    setStars(hike.stars);
+  }, [hike._id, token]);
 
   const isFavorite = (id: string) => {
     return favoriteHikes.some((hike) => hike._id === id);
@@ -18,6 +26,22 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
   const time = getTimeFromDistance(hike.properties.distance);
   const handleFavorite = () => {
     updateFavoriteHike(hike._id);
+  };
+
+  const renderStars = () => {
+    const starsArray = Array.from({ length: 5 }, (_, i) => i + 1);
+    return (
+      <View style={styles.rating}>
+        {starsArray.map((star, index) => (
+          <AntDesign
+            key={index}
+            name={star <= stars ? "star" : "staro"}
+            size={16}
+            color="#a3b18a"
+          />
+        ))}
+      </View>
+    );
   };
 
   return (
@@ -40,13 +64,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
           <Text style={styles.title} numberOfLines={1}>
             {hike.properties.name}
           </Text>
-          <View style={styles.rating}>
-            <AntDesign name="star" size={16} color="#a3b18a" />
-            <AntDesign name="star" size={16} color="#a3b18a" />
-            <AntDesign name="star" size={16} color="#a3b18a" />
-            <AntDesign name="staro" size={16} color="#a3b18a" />
-            <AntDesign name="staro" size={16} color="#a3b18a" />
-          </View>
+          {renderStars()}
           <View>
             <View style={styles.description}>
               <FontAwesome5
