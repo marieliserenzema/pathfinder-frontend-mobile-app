@@ -25,41 +25,32 @@ export default function ExploreScreen() {
   const setLocation = useSetRecoilState(locationAtom);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fetchHikes = async () => {
+    try {
+      if (!token) return;
+      return await client.getAllHikes(token);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getLocation = async () => {
+    try {
+      if (!token) return;
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        return;
+      }
+      return await Location.getCurrentPositionAsync({});
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
     console.log("useEffect explore");
-    const fetchHikes = async () => {
-      try {
-        if (!token) return;
-        const hikesData = await client.getAllHikes(token);
-        setHikes(hikesData.items);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchHikes();
-
-    const getLocation = async () => {
-      try {
-        if (!token) return;
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          return;
-        }
-        console.log(status);
-        const userLocation = await Location.getCurrentPositionAsync({});
-        console.log(
-          "latitude: " +
-          userLocation.coords.latitude +
-          ", longitude: " +
-          userLocation.coords.longitude,
-        );
-        setLocation(userLocation);
-        setIsLoading(false);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getLocation();
+    fetchHikes().then((r) => setHikes(r.items));
+    getLocation().then((r) => (setLocation(r), setIsLoading(false)));
   }, []);
 
   const toggleTab = (tab: any) => {

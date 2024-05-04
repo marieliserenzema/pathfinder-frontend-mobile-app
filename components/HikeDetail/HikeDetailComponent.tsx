@@ -1,13 +1,11 @@
 import { FontAwesome5, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
-  Image,
   TouchableOpacity,
-  ScrollView,
   Dimensions,
 } from "react-native";
 import MapView, { Geojson } from "react-native-maps";
@@ -16,13 +14,14 @@ import { useSetRecoilState } from "recoil";
 import client from "../../client/client";
 import { useUserContext } from "../../contexts/UserContext";
 import commentsListAtom from "../../contexts/recoil/CommentsListAtom";
+import hikesAtom from "../../contexts/recoil/HikesAtom";
 import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import tabAtom from "../../contexts/recoil/TabAtom";
 import CommentModel from "../../models/CommentModel";
 import HikeModel from "../../models/HikeModel";
+import getTimeFromDistance from "../../utils/distance_to_hours";
 import CommentComponent from "../CommentComponent/CommentComponent";
 import EntryComponent from "../CommentComponent/EntryComponent";
-import getTimeFromDistance from "../../utils/distance_to_hours";
 
 export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const { token } = useUserContext();
@@ -30,6 +29,8 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const setActiveTab = useSetRecoilState(tabAtom);
   const navigation = useNavigation();
   const setComments = useSetRecoilState(commentsListAtom);
+  const [stars, setStars] = useState<number>(0);
+  const setHikes = useSetRecoilState(hikesAtom);
 
   useEffect(() => {
     console.log("useEffect comment");
@@ -37,6 +38,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
     client
       .getAllCommentsByHike(token, hike._id)
       .then((r: CommentModel[]) => setComments(r));
+    setStars(hike.stars);
   }, [hike._id, token]);
 
   const screenHeight = Dimensions.get("window").height;
@@ -63,9 +65,41 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
     ],
   };
 
+  const fetchHikesAfterUpdate = async () => {
+    try {
+      if (!token) return;
+      const hikesData = await client.getAllHikes(token);
+      setHikes(hikesData.items);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const time = getTimeFromDistance(hike.properties.distance);
 
-  //todo boucle sur les étoiles et afficher le type d'étoiles selon le compte
+  const handleUpdateStars = (star: number) => {
+    if (!token) return;
+    client
+      .updateStars(token, hike._id, star)
+      .then((r: HikeModel) => (setStars(r.stars), fetchHikesAfterUpdate()));
+  };
+
+  const renderStars = () => {
+    const starsArray = Array.from({ length: 5 }, (_, i) => i + 1);
+    return (
+      <View style={styles.rating}>
+        {starsArray.map((star) => (
+          <TouchableOpacity key={star} onPress={() => handleUpdateStars(star)}>
+            <AntDesign
+              name={star <= stars ? "star" : "staro"}
+              size={16}
+              color="#a3b18a"
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
 
   return (
     <>
@@ -87,14 +121,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
       </MapView>
       <View style={styles.container}>
         <Text style={styles.title}>{hike.properties.name}</Text>
-        <View style={styles.rating}>
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="star" size={16} color="#a3b18a" />
-          <AntDesign name="staro" size={16} color="#a3b18a" />
-          <AntDesign name="staro" size={16} color="#a3b18a" />
-        </View>
-
+        {renderStars()}
         <Text style={styles.descriptionText}>
           {hike.properties.description}
         </Text>

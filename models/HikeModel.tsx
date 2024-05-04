@@ -18,6 +18,7 @@ interface HikeModel {
     operator: string;
   };
   bbox: [number, number, number, number];
+  stars: number;
 }
 
 export default HikeModel;
