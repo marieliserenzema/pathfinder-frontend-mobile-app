@@ -33,6 +33,12 @@
           "locationAlwaysPermission": "Allow Pathfinder to use your location.",
           "isAndroidForegroundServiceEnabled": false
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Pathfinder to access your camera"
+        }
       ]
     ]
   }

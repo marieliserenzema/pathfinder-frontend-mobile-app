@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { View, Text, Image, StyleSheet } from "react-native";
 import { useRecoilValue } from "recoil";
 
 import CommentsListAtom from "../../contexts/recoil/CommentsListAtom";
@@ -9,27 +9,26 @@ const CommentComponent: React.FC = () => {
 
   return (
     <>
-      {
-        comments.length > 0
-          ? comments.map((comment, index) => (
-            <View style={styles.comment} key={index}>
-              <Image
-                style={styles.profilePicture}
-                source={require("../../assets/avatar.png")}
-              />
-              <View style={styles.commentDetails}>
-                <Text style={styles.username}>{comment.user.username}</Text>
-                <Text style={styles.commentText}>{comment.text}</Text>
-              </View>
+      {comments.length > 0 ? (
+        comments.map((comment, index) => (
+          <View style={styles.comment} key={index}>
+            <Image
+              style={styles.profilePicture}
+              source={require("../../assets/avatar.png")}
+            />
+            <View style={styles.commentDetails}>
+              <Text style={styles.username}>{comment.user.username}</Text>
+              <Text style={styles.commentText}>{comment.text}</Text>
             </View>
-          ))
-          : <View style={styles.emptyContainer}>
-            <Text>😌</Text>
-            <Text>Aucun avis pour cette randonée</Text>
           </View>
-      }
+        ))
+      ) : (
+        <View style={styles.emptyContainer}>
+          <Text>😌</Text>
+          <Text>Aucun avis pour cette randonnée</Text>
+        </View>
+      )}
     </>
-
   );
 };
 
