@@ -1,19 +1,12 @@
+import { AntDesign } from "@expo/vector-icons";
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-} from "react-native";
+import { View, TextInput, StyleSheet } from "react-native";
 import { useRecoilState } from "recoil";
 
 import client from "../../client/client";
 import { useUserContext } from "../../contexts/UserContext";
 import commentsListAtom from "../../contexts/recoil/CommentsListAtom";
 import CommentModel from "../../models/CommentModel";
-import { AntDesign } from '@expo/vector-icons';
-
 
 interface CommentComponentProps {
   hikeId: string;
@@ -30,7 +23,7 @@ const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
     client
       .createComment(token, user._id, hikeId, commentText)
       .then((r: CommentModel) => {
-        setCommentText("")
+        setCommentText("");
         setComments([r, ...comments]);
       });
   };
@@ -44,7 +37,12 @@ const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
         placeholder="Ecrire un avis..."
       />
       <View style={styles.iconContainer}>
-        <AntDesign name="plus" size={20} color="white" onPress={handleCommentSubmit} />
+        <AntDesign
+          name="plus"
+          size={20}
+          color="white"
+          onPress={handleCommentSubmit}
+        />
       </View>
     </View>
   );
@@ -65,7 +63,7 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     padding: 5,
-    backgroundColor: '#a3b18a',
+    backgroundColor: "#a3b18a",
     borderRadius: 15,
   },
 });

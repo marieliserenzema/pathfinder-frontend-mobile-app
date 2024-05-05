@@ -1,3 +1,5 @@
+import { LatLng } from "react-native-maps";
+
 import CommentModel from "../models/CommentModel";
 
 async function login(email: string, password: string) {
@@ -78,19 +80,26 @@ const getMeInfo = async (token: string) => {
   }
 };
 
-const updateMeInfoWithoutPassword = async (token: string, username: string, email: string) => {
+const updateMeInfoWithoutPassword = async (
+  token: string,
+  username: string,
+  email: string,
+) => {
   try {
-    const response = await fetch("https://gorilla-honest-gull.ngrok-free.app/users", {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      "https://gorilla-honest-gull.ngrok-free.app/users",
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+        }),
       },
-      body: JSON.stringify({
-        username: username,
-        email: email
-      })
-    });
+    );
     if (response.ok) {
       return true;
     } else {
@@ -101,25 +110,32 @@ const updateMeInfoWithoutPassword = async (token: string, username: string, emai
     console.error("Erreur:", error);
     return null;
   }
-}
+};
 
-const updateMeInfoWithPassword = async (token: string, username: string, email: string, password: string) => {
+const updateMeInfoWithPassword = async (
+  token: string,
+  username: string,
+  email: string,
+  password: string,
+) => {
   try {
-    const response = await fetch("https://gorilla-honest-gull.ngrok-free.app/users", {
-      method: 'PATCH',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json'
+    const response = await fetch(
+      "https://gorilla-honest-gull.ngrok-free.app/users",
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
       },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password
-      })
-    });
+    );
     if (response.ok) {
       return true;
-
     } else {
       console.error("Erreur lors de la requête:", response.body);
       return null;
@@ -128,7 +144,7 @@ const updateMeInfoWithPassword = async (token: string, username: string, email: 
     console.error("Erreur:", error);
     return null;
   }
-}
+};
 
 const getAllHikes = async (token: string) => {
   try {
@@ -179,19 +195,14 @@ const getHikeById = async (token: string, hikeId: string) => {
 
 const getHikeByLocation = async (token: string, location: string) => {
   try {
-
     const apiUrl = `${process.env.EXPO_PUBLIC_API_URL}/hikes/?property=from&value=${encodeURIComponent(location)}`;
-    const response = await fetch(
-      apiUrl,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-    );
+    });
     if (response.ok) {
       const hike = await response.json();
       return hike;
@@ -347,6 +358,78 @@ const updateStars = async (token: string, hikeId: string, stars: number) => {
   }
 };
 
+const createAlert = async (
+  token: string,
+  userId: string,
+  hikeId: string,
+  description: string,
+  coordinate: LatLng,
+  photo: string = "",
+) => {
+  try {
+    const response = await fetch(process.env.EXPO_PUBLIC_API_URL + "/alerts", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        userId,
+        description,
+        hikeId,
+        coordinate,
+        photo,
+      }),
+    });
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.error(
+        `New alert error: ${response.status} ${response.statusText}`,
+      );
+      return null;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+};
+
+const getAllAlertsByHike = async (token: string, hikeId: string) => {
+  try {
+    const response = await fetch(
+      process.env.EXPO_PUBLIC_API_URL + "/alerts/hike/" + hikeId,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      },
+    );
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.log("Response is empty");
+        return [];
+      } else {
+        console.error("AllAlerts, erreur lors de la requête");
+        return null;
+      }
+    } else {
+      const data = await response.json();
+      if (data.length === 0) {
+        console.log("Response data is empty");
+        return [];
+      } else {
+        return data;
+      }
+    }
+  } catch (error) {
+    console.error("Erreur:", error);
+    return null;
+  }
+};
+
 export default {
   login,
   register,
@@ -361,4 +444,6 @@ export default {
   updateMeInfoWithPassword,
   getHikeByLocation,
   updateStars,
+  createAlert,
+  getAllAlertsByHike,
 };
