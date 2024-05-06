@@ -34,7 +34,7 @@ npm install
 ## Configuration de l'API
 
 Pour que l'application fonctionne correctement, vous devez obtenir une clé API à partir du serveur de l'application. 
-Contactez l'administrateur du serveur pour obtenir cette clé ou vous pouvez aller sur le server directement dans le fichier 'home/user/project/key_for_mobile_app.txt'
+Contactez l'administrateur du serveur pour obtenir cette clé ou vous pouvez aller sur le server directement dans le fichier `/home/user/project/key_for_mobile_app.txt`
 
 Une fois que vous avez la clé API, vous devez la placer dans le fichier `.env.local` à la racine du projet. 
 Assurez-vous que ce fichier contienne la variable suivante :
@@ -51,5 +51,8 @@ Une fois que vous avez configuré la clé API, vous pouvez démarrer l'applicati
 npx expo start
 ```
 
+Sans modification supplémentaire, votre application Pathfinder sera fonctionnel et aura accès aux données du serveur hébergé chez Ynov.
+
+Si vous souhaitez utiliser l'application avec votre propre serveur, veuillez suivre le Readme de pathfinder-backend et de modifier le .env avec votre url ngrok.
 
 
