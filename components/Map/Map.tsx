@@ -1,5 +1,4 @@
 import { useNavigation } from "@react-navigation/native";
-import { ref, uploadBytes } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -7,15 +6,15 @@ import {
   TouchableOpacity,
   View,
   Modal,
-  TextInput,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput
 } from "react-native";
 import MapView, { Geojson, Marker } from "react-native-maps";
 import { useRecoilState, useRecoilValue } from "recoil";
-
 import client from "../../client/client";
-import { storage } from "../../config";
 import { useUserContext } from "../../contexts/UserContext";
-import definitiveImageAtom from "../../contexts/recoil/DefinitiveImageAtom";
 import hikesAtom from "../../contexts/recoil/HikesAtom";
 import locationAtom from "../../contexts/recoil/LocationAtom";
 import photoModeAtom from "../../contexts/recoil/PhotoModeAtom";
@@ -24,9 +23,14 @@ import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import AlertModel from "../../models/AlertModel";
 import HikePinModel from "../../models/HikePinModel";
 import UserPinModel from "../../models/UserPinModel";
-import getBlobFromUri from "../../utils/getBlobFromUri";
 import AlertModal from "../AlertModal/AlertModal";
 import CameraComponent from "../CameraComponent/CameraComponent";
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import definitiveImageAtom from "../../contexts/recoil/DefinitiveImageAtom";
+import { ref, uploadBytes } from "firebase/storage";
+import getBlobFromUri from "../../utils/getBlobFromUri";
+import { storage } from "../../config";
 
 const pointInBBox = (
   lat: number,
@@ -48,10 +52,11 @@ export default function MapScreen() {
   const navigation = useNavigation();
   const userLocation = useRecoilValue(locationAtom);
   const [modalVisible, setModalVisible] = useState(false);
-  const [description, setDescription] = useState("");
   const [photoMode, setPhotoMode] = useRecoilState(photoModeAtom);
+  const [description, setDescription] = useState("");
   const [definitiveImage, setDefinitiveImage] =
     useRecoilState(definitiveImageAtom);
+
 
   const fetchAlerts = async () => {
     try {
@@ -119,6 +124,10 @@ export default function MapScreen() {
     setModalVisible(!modalVisible);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
   // hard value to test position & for demo
   const createAlertModal = () => {
     if (
@@ -132,78 +141,12 @@ export default function MapScreen() {
     }
   };
 
-  const handlePhoto = () => {
-    setPhotoMode(true);
-  };
-
-  const uploadImage = async () => {
-    if (!definitiveImage) return;
-    const imageName = "img-" + user?._id + "-" + new Date().getTime();
-    const storageRef = ref(storage, imageName);
-    const blob = await getBlobFromUri(definitiveImage.uri);
-    await uploadBytes(storageRef, blob);
-    return imageName;
-  };
-
-  const handleSubmit = async () => {
-    if (!token) return;
-    if (!user) return;
-    if (!selectedHike) return;
-    if (!userLocation) return;
-    if (description.length === 0) return;
-
-    let urlToSave;
-    if (definitiveImage) {
-      urlToSave = await uploadImage();
-    }
-
-    //coordinate test for demonstration
-    const userCoordinate = {
-      latitude: userLocation.coords.latitude,
-      longitude: userLocation.coords.longitude,
-    };
-    const test2 = {
-      latitude: 43.50755500054189,
-      longitude: 5.119654299999968,
-    };
-
-    client
-      .createAlert(
-        token,
-        user._id,
-        selectedHike?._id,
-        description,
-        test2,
-        urlToSave,
-      )
-      .then((alert: AlertModel) => {
-        setDescription("");
-        setDefinitiveImage(undefined);
-        toggleModal();
-        const usersPinsMarkers = {
-          id: alert._id,
-          userId: alert.userId,
-          latitude: alert.coordinate.latitude,
-          longitude: alert.coordinate.longitude,
-          description: alert.description,
-          photo: alert.photo,
-        };
-        setUsersMarkers((prevState) => [...prevState, { ...usersPinsMarkers }]);
-      });
-  };
-
-  const handleClose = () => {
-    toggleModal();
-    setDescription("");
-    setDefinitiveImage(undefined);
-  };
-
   const showAlert = (userMarker: UserPinModel) => {
     setSelectedUserMarker(userMarker);
     setModalVisible(true);
   };
 
-  //to show a bbox work in demonstration
+  //pour montrer comment la zone fonctionne
   const bbox = {
     type: "FeatureCollection",
     features: [
@@ -224,190 +167,272 @@ export default function MapScreen() {
     ],
   };
 
-  if (photoMode) {
-    return <CameraComponent />;
-  }
+
+  const handlePhoto = () => {
+    setPhotoMode(true);
+  };
+
+  const uploadImage = async () => {
+    if (!definitiveImage) return;
+    const imageName = "img-" + user?._id + "-" + new Date().getTime();
+    const storageRef = ref(storage, imageName);
+    const blob = await getBlobFromUri(definitiveImage.uri);
+    await uploadBytes(storageRef, blob);
+    return imageName;
+  };
+
+
+
+  const handleSubmit = async () => {
+    if (!token) return;
+    if (!user) return;
+    if (!selectedHike) return;
+    if (!userLocation) return;
+    if (description.length === 0) return;
+
+    let urlToSave;
+    if (definitiveImage) {
+      urlToSave = await uploadImage();
+    }
+
+    //coordinate test for demonstration
+    const userCoordinate = {
+      latitude: userLocation.coords.latitude,
+      longitude: userLocation.coords.longitude,
+    };
+    const test = {
+      latitude: 43.4958329005419,
+      longitude: 5.1541328000000055,
+    };
+
+    client
+      .createAlert(
+        token,
+        user._id,
+        selectedHike?._id,
+        description,
+        test,
+        urlToSave,
+      )
+      .then((alert: AlertModel) => {
+        setDescription("");
+        setDefinitiveImage(undefined);
+        toggleModal();
+        const usersPinsMarkers = {
+          id: alert._id,
+          userId: alert.userId,
+          latitude: alert.coordinate.latitude,
+          longitude: alert.coordinate.longitude,
+          description: alert.description,
+          photo: alert.photo,
+        };
+        setUsersMarkers((prevState) => [...prevState, { ...usersPinsMarkers }]);
+      });
+  };
 
   return (
-    <View>
-      <MapView
-        style={{ width: "100%", height: "100%" }}
-        region={regionSelector}
-        showsUserLocation
-      >
-        {!selectedHike && hikesMarkers.length
-          ? hikesMarkers.map((hikeMarker, index) => {
-              return (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: hikeMarker.latitude,
-                    longitude: hikeMarker.longitude,
-                  }}
-                  title={hikeMarker.name}
-                  onPress={(event) => {
-                    // @ts-ignore
-                    navigation.navigate("HikeDetail", {
-                      hikeId: hikeMarker.id,
-                    });
-                  }}
-                />
-              );
-            })
-          : []}
-        {selectedHike && usersMarkers.length
-          ? usersMarkers.map((userMarker, index) => {
-              return (
-                <Marker
-                  key={index}
-                  coordinate={{
-                    latitude: userMarker.latitude,
-                    longitude: userMarker.longitude,
-                  }}
-                  onPress={() => showAlert(userMarker)}
-                />
-              );
-            })
-          : []}
-        <Geojson
-          geojson={selectedHikeDraw}
-          strokeColor="red"
-          fillColor="green"
-          strokeWidth={2}
-        />
-        <Geojson
-          geojson={bbox}
-          strokeColor="blue"
-          fillColor="green"
-          strokeWidth={2}
-        />
-      </MapView>
-      {selectedHike && (
-        <View style={styles.view}>
-          <TouchableOpacity onPress={createAlertModal} style={styles.button}>
-            <Text>Alerter</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={resetSelectedHike}
-            style={[styles.button, styles.stopButton]}
+    <>
+      {photoMode ? (
+        <CameraComponent />
+      ) : (
+        <>
+          <MapView
+            style={{ width: "100%", height: "100%" }}
+            region={regionSelector}
+            showsUserLocation
           >
-            <Text>Stop</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      <Modal transparent visible={modalVisible} animationType="fade">
-        {selectedUserMarker ? (
-          <View style={styles.alertModalContainer}>
-            <AlertModal
-              userMarker={selectedUserMarker}
-              setModalVisible={setModalVisible}
-              setSelectedUserMarker={setSelectedUserMarker}
+            {!selectedHike && hikesMarkers.length
+              ? hikesMarkers.map((hikeMarker, index) => {
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: hikeMarker.latitude,
+                      longitude: hikeMarker.longitude,
+                    }}
+                    title={hikeMarker.name}
+                    onPress={(event) => {
+                      // @ts-ignore
+                      navigation.navigate("HikeDetail", {
+                        hikeId: hikeMarker.id,
+                      });
+                    }}
+                  />
+                );
+              })
+              : []}
+            {selectedHike && usersMarkers.length
+              ? usersMarkers.map((userMarker, index) => {
+                return (
+                  <Marker
+                    key={index}
+                    coordinate={{
+                      latitude: userMarker.latitude,
+                      longitude: userMarker.longitude,
+                    }}
+                    onPress={() => showAlert(userMarker)}
+                  />
+                );
+              })
+              : []}
+            <Geojson
+              geojson={selectedHikeDraw}
+              strokeColor="red"
+              fillColor="green"
+              strokeWidth={2}
             />
-          </View>
-        ) : (
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.title}>
-                Laisser une description et si vous le souhaitez une photo de ce
-                qu'il se produit
-              </Text>
-              <TextInput
-                style={styles.input}
-                placeholder="entrer une description..."
-                value={description}
-                onChangeText={(text) => setDescription(text)}
-                multiline
-                numberOfLines={4}
-              />
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  onPress={handlePhoto}
-                  style={[styles.modalButton, { backgroundColor: "#a3b18a" }]}
-                >
-                  <Text>Joindre une photo</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={handleSubmit}
-                  style={[styles.modalButton, { backgroundColor: "#a3b18a" }]}
-                >
-                  <Text>Confirmer</Text>
-                </TouchableOpacity>
-              </View>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  onPress={handleClose}
-                  style={[styles.modalButton, { backgroundColor: "#a3b18a" }]}
-                >
-                  <Text>Annuler</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
-      </Modal>
-    </View>
+            <Geojson
+              geojson={bbox}
+              strokeColor="blue"
+              fillColor="green"
+              strokeWidth={2}
+            />
+          </MapView>
+          {selectedHike && (
+            <>
+              <TouchableOpacity onPress={createAlertModal} style={styles.addPinButton}>
+                <MaterialIcons name="add-location-alt" size={30} color="white" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={resetSelectedHike}
+                style={styles.stopButton}
+              >
+                <FontAwesome5 name="stop-circle" size={30} color="white" />
+              </TouchableOpacity>
+            </>
+
+          )}
+
+          <Modal transparent visible={modalVisible} animationType="fade" style={styles.modal}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.keyboardAvoidingView}>
+              <TouchableWithoutFeedback onPress={closeModal}>
+                <View style={styles.modalCloseContainer}>
+                  <View style={{ flex: 1 }} />
+                </View>
+              </TouchableWithoutFeedback>
+
+
+
+              {selectedUserMarker ?
+                (
+                  <View style={styles.alertModalContainer}>
+                    <AlertModal
+                      userMarker={selectedUserMarker}
+                      setModalVisible={setModalVisible}
+                      setSelectedUserMarker={setSelectedUserMarker}
+                    />
+                  </View>
+                ) : (
+                  <View style={styles.modalContainerOpen}>
+                    <View style={styles.modalContainer}>
+                      <View style={styles.modalContent}>
+                        <Text style={styles.title}>
+                          Créer une alerte pour les autres utilisateurs
+                        </Text>
+                        <TextInput
+                          style={styles.input}
+                          placeholder="Ajouter une description..."
+                          value={description}
+                          onChangeText={(text) => setDescription(text)}
+                          multiline
+                          numberOfLines={4}
+                        />
+                        <View style={styles.buttonContainer}>
+                          <TouchableOpacity onPress={handlePhoto} style={styles.button}>
+                            <MaterialIcons name="add-a-photo" size={30} color="white" />
+                          </TouchableOpacity>
+                          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
+                            <MaterialIcons name="done" size={30} color="white" />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+
+                )}
+
+            </KeyboardAvoidingView>
+          </Modal >
+        </>
+      )
+      }
+    </>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  view: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-  button: {
+  addPinButton: {
     position: "absolute",
-    bottom: 10,
-    left: 10,
+    bottom: 20,
+    right: 10,
     padding: 10,
-    backgroundColor: "white",
-    borderRadius: 5,
-    margin: 5,
+    backgroundColor: "orange",
+    borderRadius: 50,
   },
   stopButton: {
-    bottom: 60,
+    position: "absolute",
+    right: 10,
+    bottom: 80,
+    padding: 10,
+    backgroundColor: "red",
+    borderRadius: 50,
   },
-  alertModalContainer: {
+  modal: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "blue"
+  },
+  modalContainerOpen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalCloseContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  keyboardAvoidingView: {
+    flex: 1,
   },
   modalContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    minWidth: "100%",
+  },
+  alertModalContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
+    padding: "5%",
     backgroundColor: "white",
-    padding: 22,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    width: "100%",
   },
   title: {
     fontSize: 18,
+    fontWeight: "bold",
   },
   input: {
     width: "100%",
-    height: 80,
-    backgroundColor: "lightgrey",
-    borderRadius: 5,
-    marginBottom: 20,
-    marginTop: 20,
-    paddingHorizontal: 10,
+    backgroundColor: "white",
+    marginVertical: 20,
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 20,
+    justifyContent: "space-around",
+    marginVertical: 20,
   },
-  modalButton: {
-    flex: 1,
+  button: {
     marginHorizontal: 5,
     padding: 10,
-    backgroundColor: "white",
-    borderRadius: 5,
+    backgroundColor: "#a3b18a",
+    borderRadius: 50,
     alignItems: "center",
   },
 });

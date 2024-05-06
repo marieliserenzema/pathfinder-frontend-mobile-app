@@ -1,7 +1,7 @@
 import { ref, getDownloadURL } from "firebase/storage";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-
+import Feather from '@expo/vector-icons/Feather';
 import { storage } from "../../config";
 import UserPinModel from "../../models/UserPinModel";
 
@@ -32,26 +32,28 @@ const AlertModal: React.FC<Props> = ({
     setModalVisible(false);
     setSelectedUserMarker(undefined);
   };
-
   return (
     <View style={styles.modalContent}>
-      <View>
-        <Text>{userMarker.description}</Text>
-        <Text>{userMarker.userId}</Text>
-        {photoLink !== "" ? (
+
+      {photoLink !== "" ? (
+        <>
+          <TouchableOpacity onPress={handleClose} style={styles.backIcon}>
+            <Feather name="x" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.description}>{userMarker.description}</Text>
           <Image style={styles.image} source={{ uri: photoLink }} />
-        ) : (
-          []
-        )}
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={handleClose}
-          style={[styles.modalButton, { backgroundColor: "#a3b18a" }]}
-        >
-          <Text>Fermer</Text>
-        </TouchableOpacity>
-      </View>
+        </>
+
+
+      ) : (
+        < View style={styles.row}>
+          <TouchableOpacity onPress={handleClose}>
+            <Feather name="x" size={24} color="black" />
+          </TouchableOpacity>
+          <Text style={styles.description}>{userMarker.description}</Text>
+        </View>
+
+      )}
     </View>
   );
 };
@@ -59,30 +61,31 @@ const AlertModal: React.FC<Props> = ({
 const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: "white",
-    padding: 22,
     borderRadius: 20,
-    width: "80%",
-    height: "40%",
-    justifyContent: "space-between",
-  },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginBottom: 20,
-  },
-  modalButton: {
-    flex: 1,
-    marginHorizontal: 5,
-    padding: 10,
-    backgroundColor: "white",
-    borderRadius: 5,
+    padding: 20,
     alignItems: "center",
+    justifyContent: "center",
+  },
+  backIcon: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+  },
+  description: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
   image: {
-    width: 100,
-    height: 100,
-    resizeMode: "contain",
+    marginTop: 20,
+    width: 300,
+    height: 300,
+    resizeMode: "cover",
   },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }
 });
 
 export default AlertModal;

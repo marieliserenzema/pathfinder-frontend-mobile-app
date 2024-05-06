@@ -101,7 +101,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   };
 
   return (
-    <>
+    <View style={styles.container}>
       <MapView
         style={{ width: "100%", height: mapHeight }}
         region={{
@@ -118,50 +118,57 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
           strokeWidth={2}
         />
       </MapView>
-      <View style={styles.container}>
-        <Text style={styles.title}>{hike.properties.name}</Text>
-        {renderStars()}
-        <Text style={styles.descriptionText}>
-          {hike.properties.description}
-        </Text>
-        <View style={styles.iconsContainer}>
-          <View style={styles.iconRow}>
-            <AntDesign
-              name="clockcircleo"
-              size={16}
-              color="#a3b18a"
-              style={styles.icon}
-            />
-            <Text>{time}</Text>
+      <View style={styles.details}>
+        <>
+          <Text style={styles.title}>{hike.properties.name}</Text>
+          {renderStars()}
+          <Text style={styles.descriptionText}>
+            {hike.properties.description}
+          </Text>
+          <View style={styles.iconsContainer}>
+            <View style={styles.iconRow}>
+              <AntDesign
+                name="clockcircleo"
+                size={16}
+                color="#a3b18a"
+                style={styles.icon}
+              />
+              <Text>{time}</Text>
+            </View>
+            <View style={styles.iconRow}>
+              <FontAwesome5
+                name="walking"
+                size={16}
+                color="#a3b18a"
+                style={styles.icon}
+              />
+              <Text>{hike.properties.distance} km</Text>
+            </View>
           </View>
-          <View style={styles.iconRow}>
-            <FontAwesome5
-              name="walking"
-              size={16}
-              color="#a3b18a"
-              style={styles.icon}
-            />
-            <Text>{hike.properties.distance} km</Text>
-          </View>
-        </View>
+        </>
         <TouchableOpacity style={styles.button} onPress={handleSelectHike}>
           <Text style={styles.buttonText}>Commencer le suivi</Text>
         </TouchableOpacity>
-        <View>
+        <>
           <Text style={styles.commentSectionTitle}>Avis</Text>
           <CommentComponent />
           <EntryComponent hikeId={hike._id} />
-        </View>
+        </>
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  details: {
+    flex: 1,
+    display: "flex",
     paddingHorizontal: 16,
-    paddingBottom: 20,
+    paddingBottom: 30,
+    justifyContent: "space-between",
   },
   title: {
     fontSize: 18,
@@ -199,9 +206,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "white",
-    fontWeight: "bold",
   },
-
   commentSectionTitle: {
     fontSize: 16,
     fontWeight: "bold",

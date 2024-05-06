@@ -1,6 +1,6 @@
 import { AntDesign } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { StyleSheet } from "react-native";
 import { useSetRecoilState } from "recoil";
 
 import client from "../client/client";
@@ -14,6 +14,7 @@ export default function HikeDetailScreen({
   navigation,
 }: {
   route: any;
+  navigation: any;
 }) {
   const { token } = useUserContext();
   const [oneHike, setOneHike] = useState<HikeModel | null>(null);
@@ -35,7 +36,7 @@ export default function HikeDetailScreen({
 
   if (oneHike) {
     return (
-      <ScrollView style={styles.container}>
+      <>
         <AntDesign
           name="back"
           size={24}
@@ -44,15 +45,12 @@ export default function HikeDetailScreen({
           onPress={handleGoBack}
         />
         <HikeDetailComponent hike={oneHike} />
-      </ScrollView>
+      </>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   backIcon: {
     position: "absolute",
     top: 50,

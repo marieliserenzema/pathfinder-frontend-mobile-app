@@ -2,6 +2,7 @@ import { Camera } from "expo-camera";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import Feather from '@expo/vector-icons/Feather';
 
 import CameraPreview from "./CameraPreview";
 import capturedImageAtom from "../../contexts/recoil/CapturedImageAtom";
@@ -14,16 +15,14 @@ export default function CameraComponent() {
   const [capturedImage, setCapturedImage] = useRecoilState(capturedImageAtom);
 
   if (!permission) {
-    // Camera permissions are still loading
     return <View />;
   }
 
   if (!permission.granted) {
-    // Camera permissions are not granted yet
     return (
-      <View style={styles.container}>
+      <View style={{ flex: 1 }}>
         <Text style={{ textAlign: "center" }}>
-          We need your permission to show the camera
+          Nous avpons besoin de votre permission pour utiliser la caméra
         </Text>
         <Button onPress={requestPermission} title="grant permission" />
       </View>
@@ -45,86 +44,57 @@ export default function CameraComponent() {
   };
 
   return (
-    <View style={styles.container}>
+    <>
       {previewVisible && capturedImage ? (
         <CameraPreview photo={capturedImage} />
       ) : (
         <Camera
-          style={{ flex: 1 }}
+          style={styles.camera}
           ref={(r: Camera) => {
             camera = r;
           }}
         >
-          <View
-            style={{
-              flex: 1,
-              width: "100%",
-              backgroundColor: "transparent",
-              flexDirection: "row",
-            }}
-          >
-            <View
-              style={{
-                position: "absolute",
-                bottom: 0,
-                flexDirection: "row",
-                flex: 1,
-                width: "100%",
-                padding: 20,
-                justifyContent: "space-between",
-              }}
-            >
-              <View
-                style={{
-                  alignSelf: "center",
-                  flex: 1,
-                  alignItems: "center",
-                }}
-              >
-                <TouchableOpacity
-                  onPress={__takePicture}
-                  style={{
-                    width: 70,
-                    height: 70,
-                    bottom: 0,
-                    borderRadius: 50,
-                    backgroundColor: "#fff",
-                  }}
-                />
-                <TouchableOpacity style={styles.button} onPress={closeCamera}>
-                  <Text style={styles.text}>Close Camera</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+          <TouchableOpacity style={styles.closeButton} onPress={closeCamera}>
+            <Feather name="x" size={50} color="white" />
+          </TouchableOpacity>
+          <View style={styles.cameraButtonBorder}>
+            <TouchableOpacity
+              onPress={__takePicture}
+              style={styles.cameraButton}
+            />
           </View>
         </Camera>
       )}
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-  },
   camera: {
     flex: 1,
   },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    margin: 64,
+  closeButton: {
+    alignSelf: "flex-start",
   },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
+  cameraButtonBorder: {
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 20,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
     alignItems: "center",
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+  cameraButton: {
+    width: 70,
+    height: 70,
+    padding: '2%',
+    borderRadius: 50,
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: "black",
   },
 });

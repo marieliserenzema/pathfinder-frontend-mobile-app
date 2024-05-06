@@ -2,11 +2,13 @@ import React from "react";
 import {
   ImageBackground,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
+  TouchableOpacity,
 } from "react-native";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import Feather from '@expo/vector-icons/Feather';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 
 import capturedImageAtom from "../../contexts/recoil/CapturedImageAtom";
 import definitiveImageAtom from "../../contexts/recoil/DefinitiveImageAtom";
@@ -32,61 +34,55 @@ const CameraPreview = ({ photo }: any) => {
   };
 
   return (
-    <View
-      style={{
-        backgroundColor: "transparent",
-        flex: 1,
-        width: "100%",
-        height: "100%",
-      }}
-    >
+    <>
       <ImageBackground
         source={{ uri: photo && photo.uri }}
-        style={{
-          flex: 1,
-        }}
+        style={styles.image}
       >
-        <View
-          style={{
-            position: "absolute",
-            bottom: 0,
-            flexDirection: "row",
-            flex: 1,
-            width: "100%",
-            padding: 20,
-            justifyContent: "space-between",
-          }}
-        >
-          <View
-            style={{
-              alignSelf: "center",
-              flex: 1,
-              alignItems: "center",
-            }}
-          >
-            <TouchableOpacity style={styles.button} onPress={closePreview}>
-              <Text style={styles.text}>Close preview</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={savePhoto}>
-              <Text style={styles.text}>Save Picture</Text>
-            </TouchableOpacity>
-          </View>
+        <TouchableOpacity style={styles.closeButton} onPress={closePreview}>
+          <Feather name="x" size={50} color="white" />
+        </TouchableOpacity>
+        <View style={styles.saveButtonBorder}>
+          <TouchableOpacity style={styles.saveButton} onPress={savePhoto}>
+            <MaterialIcons name="done" size={50} color="black" />
+          </TouchableOpacity>
         </View>
+
       </ImageBackground>
-    </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  button: {
+  image: {
     flex: 1,
-    alignSelf: "flex-end",
+  },
+  closeButton: {
+    alignSelf: "flex-start",
+  },
+  saveButtonBorder: {
+    position: "absolute",
+    alignSelf: "center",
+    bottom: 20,
+    width: 80,
+    height: 80,
+    borderRadius: 50,
+    backgroundColor: "white",
+    display: "flex",
+    justifyContent: "center",
     alignItems: "center",
   },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
+  saveButton: {
+    width: 70,
+    height: 70,
+    padding: '2%',
+    borderRadius: 50,
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: "black",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
