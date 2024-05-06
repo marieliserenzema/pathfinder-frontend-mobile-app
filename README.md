@@ -15,7 +15,7 @@ Avant de commencer, assurez-vous d'avoir les éléments suivants installés :
 1. Clonez ce dépôt sur votre machine locale :
 
 ```
-git clone https://github.com/marieliserenzema/pathfinder-frontend-website
+git clone https://github.com/marieliserenzema/pathfinder-frontend-mobile-app
 ```
 
 2. Accédez au répertoire du projet :
