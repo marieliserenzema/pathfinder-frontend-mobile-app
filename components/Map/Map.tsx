@@ -1,4 +1,7 @@
+import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
+import { ref, uploadBytes } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -9,12 +12,15 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   Platform,
-  TextInput
+  TextInput,
 } from "react-native";
 import MapView, { Geojson, Marker } from "react-native-maps";
 import { useRecoilState, useRecoilValue } from "recoil";
+
 import client from "../../client/client";
+import { storage } from "../../config";
 import { useUserContext } from "../../contexts/UserContext";
+import definitiveImageAtom from "../../contexts/recoil/DefinitiveImageAtom";
 import hikesAtom from "../../contexts/recoil/HikesAtom";
 import locationAtom from "../../contexts/recoil/LocationAtom";
 import photoModeAtom from "../../contexts/recoil/PhotoModeAtom";
@@ -23,14 +29,9 @@ import selectedHikeAtom from "../../contexts/recoil/SelectedHikeAtom";
 import AlertModel from "../../models/AlertModel";
 import HikePinModel from "../../models/HikePinModel";
 import UserPinModel from "../../models/UserPinModel";
+import getBlobFromUri from "../../utils/getBlobFromUri";
 import AlertModal from "../AlertModal/AlertModal";
 import CameraComponent from "../CameraComponent/CameraComponent";
-import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import definitiveImageAtom from "../../contexts/recoil/DefinitiveImageAtom";
-import { ref, uploadBytes } from "firebase/storage";
-import getBlobFromUri from "../../utils/getBlobFromUri";
-import { storage } from "../../config";
 
 const pointInBBox = (
   lat: number,
@@ -56,7 +57,6 @@ export default function MapScreen() {
   const [description, setDescription] = useState("");
   const [definitiveImage, setDefinitiveImage] =
     useRecoilState(definitiveImageAtom);
-
 
   const fetchAlerts = async () => {
     try {
@@ -167,7 +167,6 @@ export default function MapScreen() {
     ],
   };
 
-
   const handlePhoto = () => {
     setPhotoMode(true);
   };
@@ -180,8 +179,6 @@ export default function MapScreen() {
     await uploadBytes(storageRef, blob);
     return imageName;
   };
-
-
 
   const handleSubmit = async () => {
     if (!token) return;
@@ -243,37 +240,37 @@ export default function MapScreen() {
           >
             {!selectedHike && hikesMarkers.length
               ? hikesMarkers.map((hikeMarker, index) => {
-                return (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      latitude: hikeMarker.latitude,
-                      longitude: hikeMarker.longitude,
-                    }}
-                    title={hikeMarker.name}
-                    onPress={(event) => {
-                      // @ts-ignore
-                      navigation.navigate("HikeDetail", {
-                        hikeId: hikeMarker.id,
-                      });
-                    }}
-                  />
-                );
-              })
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={{
+                        latitude: hikeMarker.latitude,
+                        longitude: hikeMarker.longitude,
+                      }}
+                      title={hikeMarker.name}
+                      onPress={(event) => {
+                        // @ts-ignore
+                        navigation.navigate("HikeDetail", {
+                          hikeId: hikeMarker.id,
+                        });
+                      }}
+                    />
+                  );
+                })
               : []}
             {selectedHike && usersMarkers.length
               ? usersMarkers.map((userMarker, index) => {
-                return (
-                  <Marker
-                    key={index}
-                    coordinate={{
-                      latitude: userMarker.latitude,
-                      longitude: userMarker.longitude,
-                    }}
-                    onPress={() => showAlert(userMarker)}
-                  />
-                );
-              })
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={{
+                        latitude: userMarker.latitude,
+                        longitude: userMarker.longitude,
+                      }}
+                      onPress={() => showAlert(userMarker)}
+                    />
+                  );
+                })
               : []}
             <Geojson
               geojson={selectedHikeDraw}
@@ -290,8 +287,15 @@ export default function MapScreen() {
           </MapView>
           {selectedHike && (
             <>
-              <TouchableOpacity onPress={createAlertModal} style={styles.addPinButton}>
-                <MaterialIcons name="add-location-alt" size={30} color="white" />
+              <TouchableOpacity
+                onPress={createAlertModal}
+                style={styles.addPinButton}
+              >
+                <MaterialIcons
+                  name="add-location-alt"
+                  size={30}
+                  color="white"
+                />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={resetSelectedHike}
@@ -300,67 +304,76 @@ export default function MapScreen() {
                 <FontAwesome5 name="stop-circle" size={30} color="white" />
               </TouchableOpacity>
             </>
-
           )}
 
-          <Modal transparent visible={modalVisible} animationType="fade" style={styles.modal}>
+          <Modal
+            transparent
+            visible={modalVisible}
+            animationType="fade"
+            style={styles.modal}
+          >
             <KeyboardAvoidingView
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.keyboardAvoidingView}>
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.keyboardAvoidingView}
+            >
               <TouchableWithoutFeedback onPress={closeModal}>
                 <View style={styles.modalCloseContainer}>
                   <View style={{ flex: 1 }} />
                 </View>
               </TouchableWithoutFeedback>
 
-
-
-              {selectedUserMarker ?
-                (
-                  <View style={styles.alertModalContainer}>
-                    <AlertModal
-                      userMarker={selectedUserMarker}
-                      setModalVisible={setModalVisible}
-                      setSelectedUserMarker={setSelectedUserMarker}
-                    />
-                  </View>
-                ) : (
-                  <View style={styles.modalContainerOpen}>
-                    <View style={styles.modalContainer}>
-                      <View style={styles.modalContent}>
-                        <Text style={styles.title}>
-                          Créer une alerte pour les autres utilisateurs
-                        </Text>
-                        <TextInput
-                          style={styles.input}
-                          placeholder="Ajouter une description..."
-                          value={description}
-                          onChangeText={(text) => setDescription(text)}
-                          multiline
-                          numberOfLines={4}
-                        />
-                        <View style={styles.buttonContainer}>
-                          <TouchableOpacity onPress={handlePhoto} style={styles.button}>
-                            <MaterialIcons name="add-a-photo" size={30} color="white" />
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={handleSubmit} style={styles.button}>
-                            <MaterialIcons name="done" size={30} color="white" />
-                          </TouchableOpacity>
-                        </View>
+              {selectedUserMarker ? (
+                <View style={styles.alertModalContainer}>
+                  <AlertModal
+                    userMarker={selectedUserMarker}
+                    setModalVisible={setModalVisible}
+                    setSelectedUserMarker={setSelectedUserMarker}
+                  />
+                </View>
+              ) : (
+                <View style={styles.modalContainerOpen}>
+                  <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                      <Text style={styles.title}>
+                        Créer une alerte pour les autres utilisateurs
+                      </Text>
+                      <TextInput
+                        style={styles.input}
+                        placeholder="Ajouter une description..."
+                        value={description}
+                        onChangeText={(text) => setDescription(text)}
+                        multiline
+                        numberOfLines={4}
+                      />
+                      <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                          onPress={handlePhoto}
+                          style={styles.button}
+                        >
+                          <MaterialIcons
+                            name="add-a-photo"
+                            size={30}
+                            color="white"
+                          />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                          onPress={handleSubmit}
+                          style={styles.button}
+                        >
+                          <MaterialIcons name="done" size={30} color="white" />
+                        </TouchableOpacity>
                       </View>
                     </View>
                   </View>
-
-                )}
-
+                </View>
+              )}
             </KeyboardAvoidingView>
-          </Modal >
+          </Modal>
         </>
-      )
-      }
+      )}
     </>
   );
-};
+}
 
 const styles = StyleSheet.create({
   addPinButton: {
@@ -381,12 +394,12 @@ const styles = StyleSheet.create({
   },
   modal: {
     flex: 1,
-    backgroundColor: "blue"
+    backgroundColor: "blue",
   },
   modalContainerOpen: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalCloseContainer: {
     flex: 1,
