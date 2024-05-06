@@ -1,8 +1,7 @@
-import { ref, getDownloadURL } from "firebase/storage";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import Feather from "@expo/vector-icons/Feather";
+import React, { Dispatch, SetStateAction } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import Feather from '@expo/vector-icons/Feather';
-import { storage } from "../../config";
+
 import UserPinModel from "../../models/UserPinModel";
 
 interface Props {
@@ -16,43 +15,27 @@ const AlertModal: React.FC<Props> = ({
   setModalVisible,
   setSelectedUserMarker,
 }) => {
-  const [photoLink, setPhotoLink] = useState("");
-
-  if (userMarker.photo) {
-    getDownloadURL(ref(storage, userMarker.photo))
-      .then((url) => {
-        setPhotoLink(url);
-      })
-      .catch((error) => {
-        alert("Error downloading alert photo : " + error.message);
-      });
-  }
-
   const handleClose = () => {
     setModalVisible(false);
     setSelectedUserMarker(undefined);
   };
   return (
     <View style={styles.modalContent}>
-
-      {photoLink !== "" ? (
+      {userMarker.photo !== "" ? (
         <>
           <TouchableOpacity onPress={handleClose} style={styles.backIcon}>
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.description}>{userMarker.description}</Text>
-          <Image style={styles.image} source={{ uri: photoLink }} />
+          <Image style={styles.image} source={{ uri: userMarker.photo }} />
         </>
-
-
       ) : (
-        < View style={styles.row}>
+        <View style={styles.row}>
           <TouchableOpacity onPress={handleClose}>
             <Feather name="x" size={24} color="black" />
           </TouchableOpacity>
           <Text style={styles.description}>{userMarker.description}</Text>
         </View>
-
       )}
     </View>
   );
@@ -85,7 +68,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-  }
+  },
 });
 
 export default AlertModal;

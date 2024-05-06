@@ -1,7 +1,7 @@
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNavigation } from "@react-navigation/native";
-import { ref, uploadBytes } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
@@ -176,8 +176,9 @@ export default function MapScreen() {
     const imageName = "img-" + user?._id + "-" + new Date().getTime();
     const storageRef = ref(storage, imageName);
     const blob = await getBlobFromUri(definitiveImage.uri);
-    await uploadBytes(storageRef, blob);
-    return imageName;
+    const snapshot = await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(snapshot.ref);
+    return url;
   };
 
   const handleSubmit = async () => {
@@ -186,7 +187,6 @@ export default function MapScreen() {
     if (!selectedHike) return;
     if (!userLocation) return;
     if (description.length === 0) return;
-
     let urlToSave;
     if (definitiveImage) {
       urlToSave = await uploadImage();
