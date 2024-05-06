@@ -120,11 +120,11 @@ export default function MapScreen() {
   };
 
   // hard value to test position & for demo
-  const createAlert = () => {
+  const createAlertModal = () => {
     if (
       selectedHike &&
       userLocation &&
-      pointInBBox(43.4958329005419, 5.1541328000000055, selectedHike.bbox)
+      pointInBBox(43.50755500054189, 5.119654299999968, selectedHike.bbox)
     ) {
       toggleModal();
     } else {
@@ -163,8 +163,8 @@ export default function MapScreen() {
       longitude: userLocation.coords.longitude,
     };
     const test2 = {
-      latitude: 43.4958329005419,
-      longitude: 5.1541328000000055,
+      latitude: 43.50755500054189,
+      longitude: 5.119654299999968,
     };
 
     client
@@ -284,7 +284,7 @@ export default function MapScreen() {
       </MapView>
       {selectedHike && (
         <View style={styles.view}>
-          <TouchableOpacity onPress={createAlert} style={styles.button}>
+          <TouchableOpacity onPress={createAlertModal} style={styles.button}>
             <Text>Alerter</Text>
           </TouchableOpacity>
           <TouchableOpacity
