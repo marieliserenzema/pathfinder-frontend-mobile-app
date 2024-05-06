@@ -81,9 +81,7 @@ export default function MapScreen() {
     }
 
     if (selectedHike) {
-      console.log("fetch alert");
       fetchAlerts().then((r: AlertModel[]) => {
-        console.log(r);
         const usersPinsMarkers = r.map((alert, _) => {
           return {
             id: alert._id,
