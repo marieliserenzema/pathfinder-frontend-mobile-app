@@ -176,10 +176,19 @@ export default function MapScreen() {
         test2,
         urlToSave,
       )
-      .then((r: AlertModel) => {
+      .then((alert: AlertModel) => {
         setDescription("");
         setDefinitiveImage(undefined);
         toggleModal();
+        const usersPinsMarkers = {
+          id: alert._id,
+          userId: alert.userId,
+          latitude: alert.coordinate.latitude,
+          longitude: alert.coordinate.longitude,
+          description: alert.description,
+          photo: alert.photo,
+        };
+        setUsersMarkers((prevState) => [...prevState, { ...usersPinsMarkers }]);
       });
   };
 
