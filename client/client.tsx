@@ -17,15 +17,13 @@ async function login(email: string, password: string) {
         }),
       },
     );
-
-    if (response.ok) {
-      const data = await response.json();
-      const accessToken = data.access_token;
-      return accessToken;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    const data = await response.json();
+    return data.access_token;
   } catch (error) {
-    console.error("Erreur:", error);
-    return error;
+    return alert("Something went wrong : " + error);
   }
 }
 
@@ -45,15 +43,13 @@ const register = async (email: string, password: string, username: string) => {
         }),
       },
     );
-
-    if (response.ok) {
-      const data = await response.json();
-      const accessToken = data.access_token;
-      return accessToken;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    const data = await response.json();
+    return data.access_token;
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -69,14 +65,12 @@ const getMeInfo = async (token: string) => {
         },
       },
     );
-
-    if (response.ok) {
-      const user = await response.json();
-      return user;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -100,15 +94,12 @@ const updateMeInfoWithoutPassword = async (
         }),
       },
     );
-    if (response.ok) {
-      return true;
-    } else {
-      console.error("Erreur lors de la requête:", response);
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return true;
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -134,15 +125,12 @@ const updateMeInfoWithPassword = async (
         }),
       },
     );
-    if (response.ok) {
-      return true;
-    } else {
-      console.error("Erreur lors de la requête:", response.body);
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -155,16 +143,12 @@ const getAllHikes = async (token: string) => {
         "Content-Type": "application/json",
       },
     });
-    if (response.ok) {
-      const hikes = await response.json();
-      return hikes;
-    } else {
-      console.error("AllHikes, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -180,16 +164,12 @@ const getHikeById = async (token: string, hikeId: string) => {
         },
       },
     );
-    if (response.ok) {
-      const hike = await response.json();
-      return hike;
-    } else {
-      console.error("HikeById, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -203,16 +183,12 @@ const getHikeByLocation = async (token: string, location: string) => {
         "Content-Type": "application/json",
       },
     });
-    if (response.ok) {
-      const hike = await response.json();
-      return hike;
-    } else {
-      console.error("HikeByLocation, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -228,21 +204,16 @@ const getFavoriteHikes = async (token: string) => {
         },
       },
     );
-    if (response.ok) {
-      const favorite = await response.json();
-      return favorite;
-    } else {
-      console.error("FavoriteHikes, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
 const updateFavoriteHike = async (token: string, hikeId: string) => {
-  console.log(token);
   try {
     const response = await fetch(
       process.env.EXPO_PUBLIC_API_URL + "/users/favorite",
@@ -257,15 +228,12 @@ const updateFavoriteHike = async (token: string, hikeId: string) => {
         }),
       },
     );
-    if (response.ok) {
-      return true;
-    } else {
-      console.error("UpdateFavorite, erreur lors de la requête");
-      return false;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return false;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -281,28 +249,20 @@ const getAllCommentsByHike = async (token: string, hikeId: string) => {
         },
       },
     );
-    if (response.ok) {
-      const comments = await response.json();
-      comments.sort((a: CommentModel, b: CommentModel) =>
-        new Date(b.date) > new Date(a.date) ? 1 : -1,
-      );
-      return comments;
-    } else {
-      console.error("AllComments, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    const comments = await response.json();
+    comments.sort((a: CommentModel, b: CommentModel) =>
+      new Date(b.date) > new Date(a.date) ? 1 : -1,
+    );
+    return comments;
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
-const createComment = async (
-  token: string,
-  userId: string,
-  hikeId: string,
-  text: string,
-) => {
+const createComment = async (token: string, hikeId: string, text: string) => {
   try {
     const response = await fetch(
       process.env.EXPO_PUBLIC_API_URL + "/comments",
@@ -315,19 +275,15 @@ const createComment = async (
         body: JSON.stringify({
           text,
           hikeId,
-          userId,
         }),
       },
     );
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error("New comment, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -346,15 +302,12 @@ const updateStars = async (token: string, hikeId: string, stars: number) => {
         }),
       },
     );
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error("Update stars, erreur lors de la requête");
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -364,7 +317,7 @@ const createAlert = async (
   hikeId: string,
   description: string,
   coordinate: LatLng,
-  photo: string = "",
+  photo?: string,
 ) => {
   try {
     const response = await fetch(process.env.EXPO_PUBLIC_API_URL + "/alerts", {
@@ -381,17 +334,12 @@ const createAlert = async (
         photo,
       }),
     });
-    if (response.ok) {
-      return response.json();
-    } else {
-      console.error(
-        `New alert error: ${response.status} ${response.statusText}`,
-      );
-      return null;
+    if (!response.ok) {
+      return alert("Something went wrong : " + response.status);
     }
+    return response.json();
   } catch (error) {
-    console.error("Error:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 
@@ -408,25 +356,16 @@ const getAllAlertsByHike = async (token: string, hikeId: string) => {
       },
     );
     if (!response.ok) {
+      //pas d'alertes en bases
       if (response.status === 404) {
-        console.log("Response is empty");
         return [];
       } else {
-        console.error("AllAlerts, erreur lors de la requête");
-        return null;
-      }
-    } else {
-      const data = await response.json();
-      if (data.length === 0) {
-        console.log("Response data is empty");
-        return [];
-      } else {
-        return data;
+        return alert("Something went wrong : " + response.status);
       }
     }
+    return await response.json();
   } catch (error) {
-    console.error("Erreur:", error);
-    return null;
+    return alert("Something went wrong : " + error);
   }
 };
 

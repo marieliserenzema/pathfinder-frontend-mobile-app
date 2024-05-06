@@ -5,6 +5,7 @@ export default function CommunityScreen() {
   return (
     <View>
       <Text>CommunityPage</Text>
+      <Text>WIP</Text>
     </View>
   );
 }

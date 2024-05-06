@@ -33,7 +33,6 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
   const setHikes = useSetRecoilState(hikesAtom);
 
   useEffect(() => {
-    console.log("useEffect comment");
     if (!token) return;
     client
       .getAllCommentsByHike(token, hike._id)
@@ -71,7 +70,7 @@ export default function HikeDetailComponent({ hike }: { hike: HikeModel }) {
       const hikesData = await client.getAllHikes(token);
       setHikes(hikesData.items);
     } catch (error) {
-      console.error(error);
+      alert("Error fetching hikes after stars update : " + error);
     }
   };
 

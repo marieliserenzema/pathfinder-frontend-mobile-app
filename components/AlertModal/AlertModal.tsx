@@ -18,19 +18,21 @@ const AlertModal: React.FC<Props> = ({
 }) => {
   const [photoLink, setPhotoLink] = useState("");
 
-  getDownloadURL(ref(storage, userMarker.photo))
-    .then((url) => {
-      setPhotoLink(url);
-    })
-    .catch((error) => {
-      // Handle any errors
-      console.log(error);
-    });
+  if (userMarker.photo) {
+    getDownloadURL(ref(storage, userMarker.photo))
+      .then((url) => {
+        setPhotoLink(url);
+      })
+      .catch((error) => {
+        alert("Error downloading alert photo : " + error.message);
+      });
+  }
 
   const handleClose = () => {
     setModalVisible(false);
     setSelectedUserMarker(undefined);
   };
+
   return (
     <View style={styles.modalContent}>
       <View>

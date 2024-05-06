@@ -60,12 +60,11 @@ export default function MapScreen() {
       if (!selectedHike) return;
       return await client.getAllAlertsByHike(token, selectedHike?._id);
     } catch (error) {
-      console.error(error);
+      alert("Error fetching alerts : " + error);
     }
   };
 
   useEffect(() => {
-    console.log("useEffect map");
     if (!token) return;
 
     if (hikes) {
@@ -111,7 +110,6 @@ export default function MapScreen() {
     ],
   };
 
-  //reset aussi la region mais ok
   const resetSelectedHike = () => {
     setSelectedHike(undefined);
   };
@@ -120,7 +118,7 @@ export default function MapScreen() {
     setModalVisible(!modalVisible);
   };
 
-  // hard value to test position
+  // hard value to test position & for demo
   const createAlert = () => {
     if (
       selectedHike &&
@@ -129,8 +127,7 @@ export default function MapScreen() {
     ) {
       toggleModal();
     } else {
-      //todo faire une alerte pour l'utilisateur
-      console.log("not inside zone");
+      alert("You're too far from the hike path to create an alert.");
     }
   };
 
@@ -143,9 +140,7 @@ export default function MapScreen() {
     const imageName = "img-" + user?._id + "-" + new Date().getTime();
     const storageRef = ref(storage, imageName);
     const blob = await getBlobFromUri(definitiveImage.uri);
-    await uploadBytes(storageRef, blob).then((snapshot) => {
-      console.log("Uploaded a blob or file at: " + snapshot.ref);
-    });
+    await uploadBytes(storageRef, blob);
     return imageName;
   };
 
@@ -160,7 +155,8 @@ export default function MapScreen() {
     if (definitiveImage) {
       urlToSave = await uploadImage();
     }
-    //coordinate test
+
+    //coordinate test for demonstration
     const userCoordinate = {
       latitude: userLocation.coords.latitude,
       longitude: userLocation.coords.longitude,
@@ -169,6 +165,7 @@ export default function MapScreen() {
       latitude: 43.4958329005419,
       longitude: 5.1541328000000055,
     };
+
     client
       .createAlert(
         token,
@@ -196,7 +193,7 @@ export default function MapScreen() {
     setModalVisible(true);
   };
 
-  //pour montrer comment la zone fonctionne
+  //to show a bbox work in demonstration
   const bbox = {
     type: "FeatureCollection",
     features: [
@@ -351,7 +348,7 @@ const styles = StyleSheet.create({
   button: {
     position: "absolute",
     bottom: 10,
-    left: 10, // change this from right to left
+    left: 10,
     padding: 10,
     backgroundColor: "white",
     borderRadius: 5,
@@ -362,8 +359,8 @@ const styles = StyleSheet.create({
   },
   alertModalContainer: {
     flex: 1,
-    justifyContent: "center", // Center vertically
-    alignItems: "center", // Center horizontally
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContainer: {

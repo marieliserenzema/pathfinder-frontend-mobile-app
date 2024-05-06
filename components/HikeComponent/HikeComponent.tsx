@@ -14,7 +14,6 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
   const [stars, setStars] = useState<number>(0);
 
   useEffect(() => {
-    console.log("useEffect hikelist");
     if (!token) return;
     setStars(hike.stars);
   }, [hike._id, token]);
@@ -49,7 +48,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
     navigation.navigate("HikeDetail", {
       hikeId: hike._id,
     });
-  }
+  };
 
   return (
     <View style={styles.card}>
@@ -94,9 +93,7 @@ export default function HikeComponent({ hike }: { hike: HikeModel }) {
           </View>
         </View>
       </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={navigateToHikeDetail}>
+      <TouchableOpacity style={styles.button} onPress={navigateToHikeDetail}>
         <Text style={styles.buttonText}>Voir plus</Text>
       </TouchableOpacity>
     </View>

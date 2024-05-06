@@ -13,19 +13,16 @@ interface CommentComponentProps {
 }
 
 const EntryComponent: React.FC<CommentComponentProps> = ({ hikeId }) => {
-  const { token, user } = useUserContext();
+  const { token } = useUserContext();
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useRecoilState(commentsListAtom);
 
   const handleCommentSubmit = () => {
     if (!token) return;
-    if (!user) return;
-    client
-      .createComment(token, user._id, hikeId, commentText)
-      .then((r: CommentModel) => {
-        setCommentText("");
-        setComments([r, ...comments]);
-      });
+    client.createComment(token, hikeId, commentText).then((r: CommentModel) => {
+      setCommentText("");
+      setComments([r, ...comments]);
+    });
   };
 
   return (

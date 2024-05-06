@@ -30,7 +30,7 @@ export default function ExploreScreen() {
       if (!token) return;
       return await client.getAllHikes(token);
     } catch (error) {
-      console.error(error);
+      alert("Error fetching hikes : " + error);
     }
   };
 
@@ -39,16 +39,17 @@ export default function ExploreScreen() {
       if (!token) return;
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        return;
+        alert(
+          "Pathfinder needs your location when active for some functionalities",
+        );
       }
       return await Location.getCurrentPositionAsync({});
     } catch (error) {
-      console.error(error);
+      alert("Error getting location : " + error);
     }
   };
 
   useEffect(() => {
-    console.log("useEffect explore");
     fetchHikes().then((r) => setHikes(r.items));
     getLocation().then((r) => (setLocation(r), setIsLoading(false)));
   }, []);
