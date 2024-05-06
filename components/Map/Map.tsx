@@ -43,7 +43,6 @@ export default function MapScreen() {
   const regionSelector = useRecoilValue(regionSelectorState);
   const hikes = useRecoilValue(hikesAtom);
   const [hikesMarkers, setHikesMarkers] = useState<HikePinModel[]>([]);
-  const [alerts, setAlerts] = useState<AlertModel[]>([]);
   const [usersMarkers, setUsersMarkers] = useState<UserPinModel[]>([]);
   const [selectedUserMarker, setSelectedUserMarker] = useState<UserPinModel>();
   const navigation = useNavigation();
@@ -68,31 +67,35 @@ export default function MapScreen() {
     if (!token) return;
 
     if (hikes) {
-      const hikesMarkers = hikes.map((hike, _) => {
-        return {
-          id: hike._id,
-          latitude: hike.geometry.coordinates[0][1],
-          longitude: hike.geometry.coordinates[0][0],
-          name: hike.properties.name,
-          description: hike.properties.description,
-        };
-      });
-      setHikesMarkers(hikesMarkers);
+      setHikesMarkers(
+        hikes.map((hike) => {
+          return {
+            id: hike._id,
+            latitude: hike.geometry.coordinates[0][1],
+            longitude: hike.geometry.coordinates[0][0],
+            name: hike.properties.name,
+            description: hike.properties.description,
+          };
+        }),
+      );
     }
 
     if (selectedHike) {
-      fetchAlerts().then((r: AlertModel[]) => setAlerts(r));
-      const usersPinsMarkers = alerts.map((alert, _) => {
-        return {
-          id: alert._id,
-          userId: alert.userId,
-          latitude: alert.coordinate.latitude,
-          longitude: alert.coordinate.longitude,
-          description: alert.description,
-          photo: alert.photo,
-        };
+      console.log("fetch alert");
+      fetchAlerts().then((r: AlertModel[]) => {
+        console.log(r);
+        const usersPinsMarkers = r.map((alert, _) => {
+          return {
+            id: alert._id,
+            userId: alert.userId,
+            latitude: alert.coordinate.latitude,
+            longitude: alert.coordinate.longitude,
+            description: alert.description,
+            photo: alert.photo,
+          };
+        });
+        setUsersMarkers(usersPinsMarkers);
       });
-      setUsersMarkers(usersPinsMarkers);
     }
   }, [hikes, selectedHike]);
 
