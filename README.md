@@ -52,7 +52,15 @@ npx expo start
 ```
 
 Sans modification supplémentaire, votre application Pathfinder sera fonctionnel et aura accès aux données du serveur hébergé chez Ynov.
+Vous aurez juste à vous connecter et commencer à explorer la carte interactive !
 
 Si vous souhaitez utiliser l'application avec votre propre serveur, veuillez suivre le Readme de pathfinder-backend et de modifier le .env avec votre url ngrok.
 
 
+## Informations importantes
+
+La version de l'application que vous venez de récupérer possède des données en durs afin que de vous donner la possibilité de tester une des fonctionnalités.  
+En effet, la création d'alerte une fois qu'une randonnée est en mode suivi est limité aux utilisateurs proches de cette dernière (une centaine de mètres).
+Il est donc difficile de tester la fonctionnalité sans être proche d'une randonnée.  
+Vous trouverez ainsi des valeurs de positions en durs dans le composant `map.tsx` commençant à la ligne 131 ainsi que d'autres consignes en commentaires si vous
+souhaitez désactiver l'utilisation de ces valeurs.

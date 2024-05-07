@@ -128,12 +128,19 @@ export default function MapScreen() {
     setModalVisible(false);
   };
 
-  // hard value to test position & for demo
+  // pointInBBox est ici en dure afin de tester la création d'alerte sur la randonnée "Randonnée des amis"
+  // inverser la zone commentée avec le pointInBBox en dessous pour que la réelle position de l'utilisateur soit utilisé,
+  // il en va de même pour le commentaire ligne 218
   const createAlertModal = () => {
     if (
       selectedHike &&
       userLocation &&
       pointInBBox(43.50755500054189, 5.119654299999968, selectedHike.bbox)
+      /*pointInBBox(
+        userLocation.coords.latitude,
+        userLocation.coords.longitude,
+        selectedHike.bbox,
+      )*/
     ) {
       toggleModal();
     } else {
@@ -146,7 +153,7 @@ export default function MapScreen() {
     setModalVisible(true);
   };
 
-  //pour montrer comment la zone fonctionne
+  // la bbox sert à montrer comment la zone frontière fonctionne afin de limiter la création des alertes pour la randonnée : "Randonnée des amis"
   const bbox = {
     type: "FeatureCollection",
     features: [
@@ -192,14 +199,16 @@ export default function MapScreen() {
       urlToSave = await uploadImage();
     }
 
-    //coordinate test for demonstration
+    //test en dure pour la création d'alerte, inverser la zone commentée si vous souhaitez utiliser la position de l'utilisateur
+    /*
     const userCoordinate = {
       latitude: userLocation.coords.latitude,
       longitude: userLocation.coords.longitude,
     };
-    const test = {
-      latitude: 43.4958329005419,
-      longitude: 5.1541328000000055,
+    */
+    const userCoordinate = {
+      latitude: 43.50755500054189,
+      longitude: 5.119654299999968,
     };
 
     client
@@ -208,7 +217,7 @@ export default function MapScreen() {
         user._id,
         selectedHike?._id,
         description,
-        test,
+        userCoordinate,
         urlToSave,
       )
       .then((alert: AlertModel) => {
